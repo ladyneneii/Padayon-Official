@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
+
+.messages__col {
+  height: 85vh;
+}
+
+.chat-window {
+  width: 100%;
+  /* height: 90vh; */
+  border: 4px solid #e9ecef;
+  border-radius: 15px;
+}
+
+.chat-window p {
+  margin: 0;
+}
+.chat-window .chat-header {
+  height: 45px;
+  background: #e9ecef;
+  position: relative;
+  cursor: pointer;
+}
+.chat-window .chat-header h4 {
+  display: block;
+  padding-left: 20px;
+  color: #1e1d1d;
+  line-height: 45px;
+}
+
+.chat-window .chat-body {
+  height: calc(85vh - (45px + 50px));
+  border: 1px solid #e9ecef;
+  background: #fff;
+  position: relative;
+}
+.chat-window .chat-body .message-container {
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.chat-window .chat-body .message-container::-webkit-scrollbar {
+  display: none;
+}
+.chat-window .chat-body .message {
+  height: auto;
+  padding: 8px;
+  display: flex;
+}
+
+.chat-window .chat-body .message .message-content {
+  width: auto;
+  height: auto;
+  min-height: 40px;
+  max-width: 400px;
+  border-radius: 15px;
+  color: white;
+  background-color:  #0d6efd;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  align-self: flex-end;
+  white-space: pre-wrap;
+}
+
+#you {
+  justify-content: flex-end;
+}
+
+#you .message-content {
+  justify-content: flex-end;
+  width: fit-content;
+}
+
+#you .message-meta {
+  justify-content: flex-end;
+  width: fit-content;
+  align-self: flex-end;
+  /* margin-left: 5px; */
+}
+
+#you .very-flex-end {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+#other {
+  justify-content: flex-start;
+}
+
+#other .message-content {
+  justify-content: flex-start;
+  background-color: #dee2e6;
+  color: black;
+  width: fit-content;
+}
+
+#other .message-meta {
+  justify-content: flex-start;
+  width: fit-content;
+  /* margin-right: 5px; */
+}
+
+.message-meta #author {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.chat-window .chat-body .message .message-meta {
+  display: flex;
+  font-size: 12px;
+}
+
+.chat-window .chat-footer {
+  height: 50px;
+  border-top: none;
+  display: flex;
+  align-items: center;
+}
+
+.chat-window .chat-footer input {
+  flex: 85%;
+  border: 0;
+  padding: 0 0.7em;
+  font-size: 1em;
+  outline: none;
+}
+
+.hide {
+  opacity: 0 !important;
+}
