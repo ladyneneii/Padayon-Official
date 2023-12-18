@@ -201,10 +201,8 @@ const Register = () => {
     // firebase
     try {
       const res = await createUserWithEmailAndPassword(auth, email, pwd);
-
       // user.png, yaskween.png, ladyneneii.png
       const storageRef = ref(storage, user);
-
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on(
@@ -228,6 +226,86 @@ const Register = () => {
         },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+            console.log(downloadURL);
+
+            const formData = new FormData();
+            const register_date = new Date()
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ");
+            const state =
+              selectedUserType === "mhp" && notVerifiedProfessional
+                ? "Unverified"
+                : "Active";
+
+            formData.append("Username", user);
+            formData.append("Email", email);
+            formData.append("Password", pwd);
+            formData.append("avatar_url", file);
+            formData.append("Role", selectedUserType);
+            formData.append("register_date", register_date);
+            formData.append("State", state);
+            formData.append("first_name", firstName);
+            formData.append("middle_name", middleName || "n/a");
+            formData.append("last_name", lastName);
+            formData.append("Age", age);
+            formData.append("Gender", gender || "n/a");
+            formData.append("Pronouns", pronouns || "n/a");
+            formData.append("firebase_avatar_url", downloadURL || "n/a");
+
+            // add data to database
+            try {
+              // Make a POST request to server endpoint
+              const response = await fetch("http://localhost:3001/api/users", {
+                method: "POST",
+                body: formData,
+              });
+
+              if (response.ok) {
+                console.log("Avatar uploaded successfully.");
+                console.log(user, email, pwd);
+                setSuccess(true);
+                
+                const user_id = await response.json();
+                console.log(`Inserted id: ${user_id}`);
+
+                // for localStorage
+                const user_details: UserProps = {
+                  user_id,
+                  Username: user,
+                  Email: email,
+                  Password: pwd,
+                  avatar_url: file,
+                  Role: selectedUserType as "admin" | "mhp" | "nmhp",
+                  register_date,
+                  State: state,
+                  first_name: firstName,
+                  middle_name: middleName || "n/a",
+                  last_name: lastName,
+                  Age: age,
+                  Gender: gender || "n/a",
+                  Pronouns: pronouns || "n/a",
+                  firebase_avatar_url: avatarUrl || "n/a",
+                };
+
+                // add to localStorage
+                localStorage.setItem(
+                  "user_details",
+                  JSON.stringify(user_details)
+                );
+              } else {
+                console.error("Failed to add user to the database");
+                setErrMsg("Failed to add user to the database");
+
+                return;
+              }
+            } catch (error) {
+              console.error("Error during POST request:", error);
+              setErrMsg("Error during POST request:");
+
+              return;
+            }
+
             await updateProfile(res.user, {
               displayName: user,
               photoURL: downloadURL,
@@ -235,111 +313,8 @@ const Register = () => {
           });
         }
       );
-
-      console.log("Avatar uploaded successfully.");
-      // console.log(user, email, pwd);
-      setSuccess(true);
     } catch (err) {
       setErrMsg("Something went wrong. Try again.");
-    }
-
-    try {
-      const storage = getStorage();
-      const avatarRef = ref(storage, user);
-
-      getDownloadURL(avatarRef)
-        .then((url) => {
-          setAvatarUrl(url);
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case "storage/object-not-found":
-              // File doesn't exist
-              break;
-            case "storage/unauthorized":
-              // User doesn't have permission to access the object
-              break;
-            case "storage/canceled":
-              // User canceled the upload
-              break;
-            case "storage/unknown":
-              // Unknown error occurred, inspect the server response
-              break;
-          }
-        });
-    } catch (err) {
-      setErrMsg("Something went wrong. Try again.");
-    }
-
-    const formData = new FormData();
-    const register_date = new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace("T", " ");
-    const state =
-      selectedUserType === "mhp" && notVerifiedProfessional
-        ? "Unverified"
-        : "Active";
-
-    formData.append("Username", user);
-    formData.append("Email", email);
-    formData.append("Password", pwd);
-    formData.append("avatar_url", file);
-    formData.append("Role", selectedUserType);
-    formData.append("register_date", register_date);
-    formData.append("State", state);
-    formData.append("first_name", firstName);
-    formData.append("middle_name", middleName || "n/a");
-    formData.append("last_name", lastName);
-    formData.append("Age", age);
-    formData.append("Gender", gender || "n/a");
-    formData.append("Pronouns", pronouns || "n/a");
-    formData.append("firebase_avatar_url", avatarUrl || "n/a");
-
-    // add data to database
-    try {
-      // Make a POST request to server endpoint
-      const response = await fetch("http://localhost:3001/api/users", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const user_id = await response.json();
-        console.log(`Inserted id: ${user_id}`);
-
-        // for localStorage
-        const user_details: UserProps = {
-          user_id,
-          Username: user,
-          Email: email,
-          Password: pwd,
-          avatar_url: file,
-          Role: selectedUserType as "admin" | "mhp" | "nmhp",
-          register_date,
-          State: state,
-          first_name: firstName,
-          middle_name: middleName || "n/a",
-          last_name: lastName,
-          Age: age,
-          Gender: gender || "n/a",
-          Pronouns: pronouns || "n/a",
-          firebase_avatar_url: avatarUrl || "n/a",
-        };
-
-        // add to localStorage
-        localStorage.setItem("user_details", JSON.stringify(user_details));
-      } else {
-        console.error("Failed to add user to the database");
-        setErrMsg("Failed to add user to the database");
-
-        return;
-      }
-    } catch (error) {
-      console.error("Error during POST request:", error);
-      setErrMsg("Error during POST request:");
-
-      return;
     }
   };
 
