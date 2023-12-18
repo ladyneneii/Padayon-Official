@@ -265,7 +265,7 @@ const Register = () => {
                 console.log("Avatar uploaded successfully.");
                 console.log(user, email, pwd);
                 setSuccess(true);
-                
+
                 const user_id = await response.json();
                 console.log(`Inserted id: ${user_id}`);
 
@@ -285,7 +285,7 @@ const Register = () => {
                   Age: age,
                   Gender: gender || "n/a",
                   Pronouns: pronouns || "n/a",
-                  firebase_avatar_url: avatarUrl || "n/a",
+                  firebase_avatar_url: downloadURL || "n/a",
                 };
 
                 // add to localStorage
