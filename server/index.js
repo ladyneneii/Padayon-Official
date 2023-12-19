@@ -88,7 +88,9 @@ io.on("connection", (socket) => {
           if (!err) {
             console.log(`Message has been added.`);
             // .to(room_id) means only the users in the same private room id can interact with each other. private_room_id works because it is the basis in socket.join()
-            socket.to(privateMessageData.private_room_id).emit("receive_private_message", privateMessageData);
+            socket
+              .to(privateMessageData.private_room_id)
+              .emit("receive_private_message", privateMessageData);
           } else {
             console.log(err);
           }
@@ -203,7 +205,7 @@ app.post("/api/users", upload.single("avatar_url"), (req, res) => {
     const params = req.body;
     console.log(params);
     // Add the file path to the params
-    params.avatar_url = req.file.originalname;
+    params.avatar_url = req.file ? req.file.originalname : "n/a";
 
     connection.query("INSERT INTO users SET ?", params, (err, rows) => {
       connection.release(); // return the connection to pool
