@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Link } from "react-router-dom";
-import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg"
+import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg";
 
 interface NavbarComponentProps {
   handleNavbarHeightChange?: (height: number) => void;
@@ -10,7 +10,7 @@ interface NavbarComponentProps {
 const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
   const navbarRef = useRef<HTMLElement>(null);
   // let firebase_avatar_url = ""
-  const [username, setUsername] = useState("")
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const navbarHeight = navbarRef.current ? navbarRef.current.clientHeight : 0;
@@ -41,7 +41,7 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
     <nav ref={navbarRef} className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand" href="/MainPage">
-          Padayon, {username}!
+          {username !== "" ? `Padayon, ${username}!` : "Padayon!"}
         </a>
         <button
           className="navbar-toggler"

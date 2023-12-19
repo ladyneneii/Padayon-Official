@@ -58,7 +58,7 @@ h1 {
 }
 
 a {
-  color: whitesmoke;
+  color: rgb(66, 142, 255);
 }
 
 .padayon-bg-color {
@@ -84,6 +84,9 @@ a {
 
 /* loading animation */
 /* credits to https://loading.io/css/ */
+.lds-ring-container {
+  position: fixed;
+}
 .lds-ring {
   display: inline-block;
   position: relative;

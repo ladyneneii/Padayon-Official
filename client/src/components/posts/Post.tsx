@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import empty_pfp from "../../assets/img/empty-profile-picture-612x612.jpg";
 import { ButtonProps } from "../Button";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 
 interface PostComponentProps extends ButtonProps {
   postRef: React.RefObject<HTMLTextAreaElement>;
@@ -88,11 +89,13 @@ const Post = ({
         }}
       >
         <div className="d-flex align-items-center">
-          <img
-            src={firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl}
-            alt="profile picture"
-            className="rounded-circle empty_profile_picture_icon me-3"
-          />
+          <Link to="/ProfilePage">
+            <img
+              src={firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl}
+              alt="profile picture"
+              className="rounded-circle empty_profile_picture_icon me-3"
+            />
+          </Link>
           <div className="form-floating flex-fill">
             <textarea
               className="form-control"

@@ -12,14 +12,11 @@ import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, storage } from "../firebase";
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  getStorage,
-} from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Alert from "../components/Alert";
+import LoadingAnimation from "../components/LoadingAnimation";
 
 export interface UserProps {
   user_id: string;
@@ -46,6 +43,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_=+]).{8,24}$/;
 const Register = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState(false);
 
   const firstNameRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLDivElement | null>(null);
@@ -131,15 +129,10 @@ const Register = () => {
     const file = fileInputRef.current?.files?.[0] || "n/a";
     if (!v1 || !v2 || !v3) {
       setErrMsg("Invalid Entry");
+      setAlert(true)
+      setIsLoading(false)
       return;
     }
-
-    if (!file) {
-      setErrMsg("Please select a file.");
-      return;
-    }
-
-    console.log("This is file: " + file);
 
     const firstName = (document.querySelector("#firstName") as HTMLInputElement)
       .value;
@@ -156,8 +149,10 @@ const Register = () => {
       document.querySelector("#pronouns") as HTMLInputElement | null
     )?.value;
 
-    if (parseInt(age, 10) <= 0) {
+    if (!age || parseInt(age, 10) <= 0 || parseInt(age, 10) >= 150) {
       setErrMsg("Please enter a valid age.");
+      setAlert(true);
+      setIsLoading(false)
       return;
     }
 
@@ -172,12 +167,16 @@ const Register = () => {
       } else {
         console.error("This username already exists.");
         setErrMsg("This username already exists.");
+        setAlert(true);
+        setIsLoading(false);
 
         return;
       }
     } catch (error) {
       console.error("Error during GET request:", error);
       setErrMsg("Error during GET request:");
+      setAlert(true);
+      setIsLoading(false);
 
       return;
     }
@@ -193,12 +192,16 @@ const Register = () => {
       } else {
         console.error("This email already exists.");
         setErrMsg("This email already exists.");
+        setAlert(true);
+        setIsLoading(false);
 
         return;
       }
     } catch (error) {
       console.error("Error during GET request:", error);
       setErrMsg("Error during GET request:");
+      setAlert(true);
+      setIsLoading(false);
 
       return;
     }
@@ -270,12 +273,16 @@ const Register = () => {
         } else {
           console.error("Failed to add user to the database");
           setErrMsg("Failed to add user to the database");
+          setAlert(true);
+          setIsLoading(false);
 
           return;
         }
       } catch (error) {
         console.error("Error during POST request:", error);
         setErrMsg("Error during POST request:");
+        setAlert(true);
+        setIsLoading(false);
 
         return;
       }
@@ -308,7 +315,8 @@ const Register = () => {
           },
           (error) => {
             setErrMsg("Error uploading display picture.");
-            console.log(error);
+            setAlert(true);
+            setIsLoading(false);
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(
@@ -331,23 +339,20 @@ const Register = () => {
       }
     } catch (err) {
       setErrMsg("Something went wrong. Try again.");
+      setAlert(true);
+      setIsLoading(false);
     }
   };
 
   return (
     <>
       <Navbar></Navbar>
-      {isLoading && (
-        <div className="container text-center z-3 position-absolute top-50 start-50 translate-middle">
-          <div className="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-          <p className="text-loading fw-bold">Processing...</p>
-        </div>
+      {alert && (
+        <Alert color="danger" setAlert={setAlert}>
+          {errMsg}
+        </Alert>
       )}
+      {isLoading && <LoadingAnimation></LoadingAnimation>}
 
       <section className="container-sm py-5">
         <p

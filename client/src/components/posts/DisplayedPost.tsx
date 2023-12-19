@@ -8,6 +8,7 @@ import { PostProps } from "../../pages/PostsPage";
 import Post from "./Post";
 import { replies } from "../../pages/PostsPage";
 import { storeReplies } from "../../pages/PostsPage";
+import { Link } from "react-router-dom";
 
 interface DisplayedPostComponentProps {
   key: string;
@@ -370,13 +371,15 @@ const DisplayedPost = ({
         {State === "Visible" ? (
           <>
             <div className="user_details my-2">
-              <img
-                src={
-                  firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl
-                }
-                alt="profile picture"
-                className="rounded-circle empty_profile_picture_icon me-3"
-              />
+              <Link to={`/ProfilePage/${Username}`}>
+                <img
+                  src={
+                    firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl
+                  }
+                  alt="profile picture"
+                  className="rounded-circle empty_profile_picture_icon me-3"
+                />
+              </Link>
               <div className="username_date-time">
                 <p className="my-0 fw-semibold">{Username}</p>
                 <span className="fw-normal">

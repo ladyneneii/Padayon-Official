@@ -16,6 +16,7 @@ interface MHPCardDisplayInfoProps {
 }
 
 const MainPage = () => {
+  const [alert, setAlert] = useState(false);
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -145,7 +146,11 @@ const MainPage = () => {
   return (
     <>
       <Navbar></Navbar>
-      {error && <Alert color="danger">{error}</Alert>}
+      {error && (
+        <Alert color="danger" setAlert={setAlert}>
+          {error}
+        </Alert>
+      )}
       <div className="container text-center mt-2">
         <h1 className="text-center mb-4">
           Mental Health Professionals Near Me

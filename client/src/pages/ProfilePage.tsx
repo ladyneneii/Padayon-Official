@@ -48,6 +48,8 @@ const ProfilePage = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const user_details_str = localStorage.getItem("user_details");
 
     if (user_details_str) {
