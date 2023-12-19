@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import "../styles/pages/profile.css";
 
 const socket = io("http://localhost:3001");
 
@@ -138,7 +140,7 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <div className="container mt-3 p-3">
+      <div className="container mt-3 p-3 profile-container">
         {userDetails ? (
           // Destructure userDetails outside JSX
           (() => {
@@ -303,6 +305,7 @@ const ProfilePage = () => {
           <p>User info not found</p>
         )}
       </div>
+      <Footer></Footer>
     </>
   );
 };

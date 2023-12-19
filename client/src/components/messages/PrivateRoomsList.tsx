@@ -1,8 +1,6 @@
 import React from "react";
 import io from "socket.io-client";
 import empty_pfp from "../../assets/img/empty-profile-picture-612x612.jpg";
-import "../../styles/components/post.css";
-import { title } from "process";
 
 const socket = io("http://localhost:3001");
 
@@ -58,7 +56,7 @@ const PrivateRoomsList = ({
         }) => (
           <div
             key={private_room_id}
-            className="border rounded-5 bg-white py-3 my-2 d-flex align-items-center private_chat"
+            className="border rounded-5 bg-white py-3 my-2 d-flex align-items-center private-chat"
             onClick={() => joinPrivateRoom(private_room_id, Title)}
           >
             <img

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import empty_pfp from "../../assets/img/empty-profile-picture-612x612.jpg";
 import { ButtonProps } from "../Button";
 import Button from "../Button";
 
@@ -31,14 +32,27 @@ const Post = ({
   setShowRemark,
   remarkRef,
   privacyRef,
-  setDummyState
+  setDummyState,
 }: PostComponentProps) => {
+  const [firebaseAvatarUrl, setFirebaseAvatarUrl] = useState("");
   const replyIndent = postReplyLevel === 0 ? 65 : replyMode ? 115 : 0;
 
+  useEffect(() => {
+    const unparsed_user_details = localStorage.getItem("user_details");
+
+    if (unparsed_user_details) {
+      const user_details = JSON.parse(unparsed_user_details);
+
+      // firebase_avatar_url = user_details.firebase_avatar_url;
+      setFirebaseAvatarUrl(user_details.firebase_avatar_url);
+    } else {
+      console.log("User details not found.");
+    }
+  });
 
   const handleReplyCancel = () => {
     if (setShowReplyForm) {
-      setShowRemark(false)
+      setShowRemark(false);
       setShowReplyForm(false);
     }
   };
@@ -68,19 +82,26 @@ const Post = ({
   return (
     <>
       <div
+        className="container-xxl mb-5"
         style={{
           marginLeft: `${replyIndent}px`,
-          width: "100%",
         }}
       >
-        <div className="form-floating mb-3">
-          <textarea
-            className="form-control"
-            placeholder="What's on your mind?"
-            ref={postRef}
-            onChange={onChange}
-          ></textarea>
-          <label htmlFor="post">What's on your mind?</label>
+        <div className="d-flex align-items-center">
+          <img
+            src={firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl}
+            alt="profile picture"
+            className="rounded-circle empty_profile_picture_icon me-3"
+          />
+          <div className="form-floating flex-fill">
+            <textarea
+              className="form-control"
+              placeholder="What's on your mind?"
+              ref={postRef}
+              onChange={onChange}
+            ></textarea>
+            <label htmlFor="post">What's on your mind?</label>
+          </div>
         </div>
         {showRemark && (
           <div className="mb-3">
@@ -95,10 +116,30 @@ const Post = ({
             />
           </div>
         )}
-        <div className="mb-3">
-          <label className="form-label">Privacy</label>
+        <div className="my-3 d-flex align-items-center">
+          <Button color={color} onClick={onClick} disabled={disabled}>
+            {children}
+          </Button>
+          {!showRemark ? (
+            <Button color="primary" onClick={handleTriggering} disabled={false}>
+              Mark this as triggering
+            </Button>
+          ) : (
+            <Button
+              color="primary"
+              onClick={handleTriggeringCancel}
+              disabled={false}
+            >
+              Unmark as triggering
+            </Button>
+          )}
+          {replyMode && (
+            <Button color="danger" onClick={handleReplyCancel} disabled={false}>
+              Cancel
+            </Button>
+          )}
           <select
-            className="form-select"
+            className="form-select d-inline mb-3 ms-auto"
             id="privacy"
             ref={privacyRef}
             defaultValue="Everyone"
@@ -110,27 +151,6 @@ const Post = ({
             <option value="Friends">Friends</option>
           </select>
         </div>
-        <Button color={color} onClick={onClick} disabled={disabled}>
-          {children}
-        </Button>
-        {!showRemark ? (
-          <Button color="primary" onClick={handleTriggering} disabled={false}>
-            Mark this as triggering
-          </Button>
-        ) : (
-          <Button
-            color="primary"
-            onClick={handleTriggeringCancel}
-            disabled={false}
-          >
-            Unmark as triggering
-          </Button>
-        )}
-        {replyMode && (
-          <Button color="danger" onClick={handleReplyCancel} disabled={false}>
-            Cancel
-          </Button>
-        )}
       </div>
     </>
   );

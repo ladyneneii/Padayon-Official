@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import io from "socket.io-client";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Chat from "../components/messages/Chat";
 import PrivateChat from "../components/messages/PrivateChat";
-import "../styles/pages/style.css";
+import "../styles/pages/messages.css";
 import Button from "../components/Button";
 import { PrivateRoomComponentProps } from "../components/messages/PrivateRoomsList";
 import PrivateRoomsList from "../components/messages/PrivateRoomsList";
@@ -157,9 +158,14 @@ const MessagesPage = () => {
       <div className="container-xxl mt-4">
         <div className="row">
           <div className="col messages__col">
-            <div className="messages__div border rounded-5 p-4 mb-4">
+            <div className="messages__div shadow border rounded-5 border-0 p-4 mb-4">
               <div className="row">
                 <h3 className="mb-3">Join a chatroom</h3>
+                <p>
+                  Create a new chatroom by entering its room title and password,
+                  or join an existing chatroom by entering its correct room
+                  title and password.
+                </p>
               </div>
 
               <div className="row">
@@ -194,7 +200,7 @@ const MessagesPage = () => {
               </div>
             </div>
 
-            <div className="messages__div private_chats_list_container border rounded-5 p-4 overflow-auto">
+            <div className="messages__div shadow border-0 private-chats-list-container border rounded-5 p-4 overflow-auto">
               <h3 className="mb-3">Your Private Chats</h3>
               <PrivateRoomsList
                 privateRooms={privateRooms}
@@ -227,6 +233,7 @@ const MessagesPage = () => {
           </div>
         </div>
       </div>
+      <Footer></Footer>
     </>
   );
 };

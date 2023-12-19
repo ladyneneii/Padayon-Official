@@ -18,6 +18,8 @@ import {
   getDownloadURL,
   getStorage,
 } from "firebase/storage";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export interface UserProps {
   user_id: string;
@@ -43,7 +45,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_=+]).{8,24}$/;
 
 const Register = () => {
   const navigate = useNavigate();
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const firstNameRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLDivElement | null>(null);
@@ -109,7 +111,7 @@ const Register = () => {
       if (selectedUserType !== "nmhp" && notVerifiedProfessional) {
         navigate("/MHPFormPage");
       } else {
-        navigate("/SignIn");
+        navigate("/MainPage");
       }
     }
   }, [success, selectedUserType, notVerifiedProfessional]);
@@ -121,6 +123,7 @@ const Register = () => {
   // submit buttons
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    setIsLoading(true);
     // if button enabled with JS hack
     const v1 = USER_REGEX.test(user);
     const v2 = EMAIL_REGEX.test(email);
@@ -237,6 +240,7 @@ const Register = () => {
         if (response.ok) {
           console.log("Avatar uploaded successfully.");
           console.log(user, email, pwd);
+          setIsLoading(false);
           setSuccess(true);
 
           const user_id = await response.json();
@@ -332,7 +336,20 @@ const Register = () => {
 
   return (
     <>
-      <section className="container-sm my-5">
+      <Navbar></Navbar>
+      {isLoading && (
+        <div className="container text-center z-3 position-absolute top-50 start-50 translate-middle">
+          <div className="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+          <p className="text-loading fw-bold">Processing...</p>
+        </div>
+      )}
+
+      <section className="container-sm py-5">
         <p
           ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}
@@ -652,6 +669,7 @@ const Register = () => {
           </span>
         </p>
       </section>
+      <Footer></Footer>
     </>
   );
 };

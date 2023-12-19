@@ -1,6 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Link } from "react-router-dom";
+import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg"
 
 interface NavbarComponentProps {
   handleNavbarHeightChange?: (height: number) => void;
@@ -8,19 +9,39 @@ interface NavbarComponentProps {
 
 const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
   const navbarRef = useRef<HTMLElement>(null);
+  // let firebase_avatar_url = ""
+  const [username, setUsername] = useState("")
 
   useEffect(() => {
     const navbarHeight = navbarRef.current ? navbarRef.current.clientHeight : 0;
-    if (handleNavbarHeightChange){
+    if (handleNavbarHeightChange) {
       handleNavbarHeightChange(navbarHeight);
     }
   }, [handleNavbarHeightChange]);
-  
+
+  useEffect(() => {
+    const unparsed_user_details = localStorage.getItem("user_details");
+
+    if (unparsed_user_details) {
+      const user_details = JSON.parse(unparsed_user_details);
+
+      // firebase_avatar_url = user_details.firebase_avatar_url;
+      setUsername(user_details.Username);
+    } else {
+      console.log("User details not found.");
+    }
+  });
+
+  const handleLogOut = () => {
+    console.log("Logged out");
+    localStorage.removeItem("user_details");
+  };
+
   return (
     <nav ref={navbarRef} className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
         <a className="navbar-brand" href="/MainPage">
-          Padayon
+          Padayon, {username}!
         </a>
         <button
           className="navbar-toggler"
@@ -45,41 +66,9 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/SignIn" className="nav-link">
-                Log Out
-                {/* TODO: erase user info from localstorage */}
+              <Link to="/ProfilePage" className="nav-link">
+                Profile
               </Link>
-            </li>
-            <li className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Dropdown
-              </a>
-              <ul className="dropdown-menu">
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Action
-                  </a>
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Another action
-                  </a>
-                </li>
-                <li>
-                  <hr className="dropdown-divider" />
-                </li>
-                <li>
-                  <a className="dropdown-item" href="#">
-                    Something else here
-                  </a>
-                </li>
-              </ul>
             </li>
             <li className="nav-item">
               <Link to="/PostsPage" className="nav-link">
@@ -96,15 +85,20 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
                 The World
               </Link>
             </li>
+            <li className="nav-item">
+              <Link to="/SignIn" className="nav-link" onClick={handleLogOut}>
+                Log Out
+              </Link>
+            </li>
           </ul>
-          <form className="d-flex" role="search">
+          <form className="d-flex me-3" role="search">
             <input
               className="form-control me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
             />
-            <button className="btn btn-outline-success" type="submit">
+            <button className="btn btn-outline-primary" type="submit">
               Search
             </button>
           </form>

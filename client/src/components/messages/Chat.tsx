@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import ScrollToBottom from "react-scroll-to-bottom";
 import empty_pfp from "../../assets/img/empty-profile-picture-612x612.jpg";
-import "../../styles/components/post.css";
 
 interface ChatProps {
   socket: any;

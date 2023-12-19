@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "firebase/storage";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 import Card from "../components/Card";
 
@@ -175,6 +176,7 @@ const MainPage = () => {
           )}
         </div>
       </div>
+      <Footer></Footer>
     </>
   );
 };

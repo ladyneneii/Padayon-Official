@@ -1,7 +1,20 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 
 .messages__col {
-  height: 85vh;
+  height: 100vh;
+}
+
+.messages__div {
+  background-color: #edf6ff;
+}
+
+.private-chats-list-container {
+  height: 50%;
+}
+
+.private-chat:hover {
+  background-color: #a8d4ff !important;
+  cursor: pointer;
 }
 
 .chat-window {
@@ -120,6 +133,8 @@
   border-top: none;
   display: flex;
   align-items: center;
+  background-color: white;
+  border-radius: 0 0 10px 10px;
 }
 
 .chat-window .chat-footer input {

@@ -1,0 +1,9 @@
+.user_details {
+  display: flex;
+  align-items: center;
+}
+
+.privacy-width {
+  width: 20%;
+}
+

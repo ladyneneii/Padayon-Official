@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import empty_pfp from "../../assets/img/empty-profile-picture-612x612.jpg";
-import "../../styles/components/post.css";
+import "../../styles/pages/posts.css";
 import Button from "../Button";
 import { getAllPosts } from "../../pages/PostsPage";
 import { PostProps } from "../../pages/PostsPage";
@@ -362,10 +362,9 @@ const DisplayedPost = ({
   return (
     <>
       <div
-        className="container-md bg-light bg-gradient border rounded-4 shadow mb-3"
+        className="container-xxl bg-light bg-gradient border rounded-4 shadow mb-3"
         style={{
           marginLeft: post_reply_level > 0 ? "50px" : "0px",
-          width: "100%",
         }}
       >
         {State === "Visible" ? (
@@ -446,11 +445,10 @@ const DisplayedPost = ({
               <div className="mb-3">
                 <label className="form-label">Privacy</label>
                 <select
-                  className="form-select"
+                  className="form-select privacy-width"
                   id="privacy"
                   ref={displayedPrivacyRef}
                   defaultValue="Everyone"
-                  style={{ width: "15%" }}
                 >
                   <option value="Everyone">Everyone</option>
                   <option value="MHP">MHP</option>

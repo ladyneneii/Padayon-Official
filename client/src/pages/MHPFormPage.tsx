@@ -1,5 +1,7 @@
 import { useRef, useState, useEffect, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Button from "../components/Button";
 
 const MHPFormPage = () => {
@@ -220,7 +222,8 @@ const MHPFormPage = () => {
             console.log("user_details not found in local storage.");
           }
         } else {
-          console.error("Failed to add user to the database");
+          const errorMessage = await response.text();
+          console.error("Error message:", errorMessage);
 
           return;
         }
@@ -255,6 +258,7 @@ const MHPFormPage = () => {
 
   return (
     <>
+    <Navbar></Navbar>
       <section className="container-sm my-5">
         <form>
           {/* license number */}
@@ -1130,6 +1134,7 @@ const MHPFormPage = () => {
           </Button>
         </form>
       </section>
+      <Footer></Footer>
     </>
   );
 };

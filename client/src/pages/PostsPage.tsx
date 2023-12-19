@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import Post from "../components/posts/Post";
 import Button from "../components/Button";
 import DisplayedPost from "../components/posts/DisplayedPost";
@@ -153,7 +154,7 @@ const PostsPage = () => {
   return (
     <>
       <Navbar></Navbar>
-      <section className="container-lg my-5 overflow-x-auto">
+      <section className="p-5 overflow-x-auto">
         <h1 className="mb-4">Safe Space</h1>
 
         <Post
@@ -221,6 +222,7 @@ const PostsPage = () => {
             )
         )}
       </section>
+      <Footer></Footer>
     </>
   );
 };

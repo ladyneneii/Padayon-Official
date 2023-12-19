@@ -225,27 +225,46 @@ app.post("/api/mhps", upload.single("avatar_url"), (req, res) => {
     if (err) throw err;
     const params = req.body;
 
+    // check if license_number already exists
     connection.query(
-      "INSERT INTO mental_health_professionals SET ?",
-      params,
+      "SELECT * FROM mental_health_professionals WHERE license_number = ?",
+      [params.license_number],
       (err, rows) => {
         connection.release(); // return the connection to pool
 
         if (!err) {
-          // update State from Unverified to Active
-          connection.query(
-            "UPDATE users SET State = ? WHERE user_id = ?",
-            ["Active", params.user_id],
-            (err, rows) => {
-              connection.release(); // return the connection to pool
+          if (rows.length > 0) {
+            console.log("License number already exists.");
+            res.status(400).send("License number already exists.");
+          } else {
+            // Add mhp data to database
+            connection.query(
+              "INSERT INTO mental_health_professionals SET ?",
+              params,
+              (err, rows) => {
+                connection.release(); // return the connection to pool
 
-              if (!err) {
-                res.json(rows);
-              } else {
-                console.log(err);
+                if (!err) {
+                  // update State from Unverified to Active
+                  connection.query(
+                    "UPDATE users SET State = ? WHERE user_id = ?",
+                    ["Active", params.user_id],
+                    (err, rows) => {
+                      connection.release(); // return the connection to pool
+
+                      if (!err) {
+                        res.json(rows);
+                      } else {
+                        console.log(err);
+                      }
+                    }
+                  );
+                } else {
+                  console.log(err);
+                }
               }
-            }
-          );
+            );
+          }
         } else {
           console.log(err);
         }

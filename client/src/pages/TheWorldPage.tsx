@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import Card from "../components/Card";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
 import L from "leaflet";
-import Button from "../components/Button";
 
 export interface PositionProps {
   coords: { latitude: number; longitude: number };
@@ -98,6 +98,7 @@ const TheWorldPage = () => {
         id="nearYouMap"
         style={{ height: `calc(100vh - ${navbarHeight}px)` }}
       ></div>
+      <Footer></Footer>
     </>
   );
 };

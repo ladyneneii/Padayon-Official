@@ -1,30 +1,30 @@
 /* IMPORTS */
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800&display=swap");
 
 /* RESET */
 *,
 *::after,
 *::before {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 input,
 button,
 textarea {
-    font: inherit;
+  font: inherit;
 }
 
 /* VARIABLES */
 :root {
   /* FONTS */
-  --FF: 'Poppins', sans-serif;
+  --FF: "Poppins", sans-serif;
   --FW: 600;
 
   /* COLORS */
   --CLR-BG: #a7bcff;
-  --CLR-BG-DARKLIGHT: #8da4f1; 
+  --CLR-BG-DARKLIGHT: #8da4f1;
   --CLR-BG-DARK: #5d5b8d;
   --CLR-BG-DARKER: #3e3c61;
   --CLR-BG-DARKEST: #2f2d52;
@@ -33,11 +33,14 @@ textarea {
 
 /* UTILITY CLASSES */
 .offscreen {
-    position: absolute;
-    left: -1000px;
+  position: absolute;
+  left: -1000px;
 }
 
-.valid, .invalid, .instructions, .errmsg {
+.valid,
+.invalid,
+.instructions,
+.errmsg {
   display: inline;
 }
 
@@ -47,15 +50,23 @@ textarea {
 
 /* GENERAL STYLES */
 html {
-    scroll-behavior: smooth;
-    font-size: var(--FS);
-    font-family: var(--FF);
-    background-color: var(--BGCOLOR);
-    background-image: var(--BGIMAGE);
+  scroll-behavior: smooth;
 }
 
 h1 {
   font-weight: var(--FW);
+}
+
+a {
+  color: whitesmoke;
+}
+
+.padayon-bg-color {
+  background: linear-gradient(
+    to bottom,
+    rgb(255, 255, 255),
+    rgb(114, 192, 255)
+  );
 }
 
 /* CUSTOM BOOTSTRAP STYLES */
@@ -64,11 +75,57 @@ h1 {
 }
 
 .custom-check-icon {
-  color: green; 
+  color: green;
 }
 
 .custom-times-icon {
-  color: red; 
+  color: red;
 }
 
+/* loading animation */
+/* credits to https://loading.io/css/ */
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #6190e9;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #6190e9 transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.text-loading {
+  color: #6190e9;
+}
 
+/* circle profile picture icon small */
+.empty_profile_picture_icon {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}

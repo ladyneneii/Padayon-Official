@@ -1,5 +1,6 @@
 import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg";
 import { Link } from "react-router-dom";
+import "../styles/components/card.css"
 
 interface CardComponentProps {
   Username: string;
@@ -21,16 +22,15 @@ const Card = ({
   disorders_specializations,
 }: CardComponentProps) => {
   return (
-    <div className="card mb-5" style={{ width: "18rem" }}>
+    <div className="card mb-5 card-width border-0 shadow card-hover">
       <Link
         to={`/ProfilePage/${Username}`}
-        style={{ textDecoration: "none", color: "inherit" }}
+        className="link-card-style"
       >
         <img
           src={firebase_avatar_url === "n/a" ? empty_pfp : firebase_avatar_url}
-          className="card-img-top"
+          className="card-img-top card-image-style"
           alt="..."
-          style={{ width: "100%", height: "300px", objectFit: "cover" }}
         />
         <div className="card-body">
           <h5 className="card-title">
