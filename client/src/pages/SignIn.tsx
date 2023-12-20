@@ -4,7 +4,7 @@ import "../styles/index.css";
 import Button from "../components/Button";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbar2";
 import Footer from "../components/Footer";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
@@ -121,7 +121,7 @@ const SignIn = () => {
   return (
     <>
     <Navbar></Navbar>
-      <section className="container-sm pt-5">
+      <section className="container-sm pt-5" style={{ fontFamily: "Courier New, monospace"}}>
         <section>
           <p
             ref={errRef}

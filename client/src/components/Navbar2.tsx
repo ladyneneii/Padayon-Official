@@ -87,7 +87,12 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
             </li>
             <li className="nav-item">
               <Link to="/SignIn" className="nav-link" onClick={handleLogOut}>
-                Log Out
+                Sign In
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/" className="nav-link">
+                Register
               </Link>
             </li>
           </ul>

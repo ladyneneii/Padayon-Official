@@ -152,10 +152,10 @@ const MainPage = () => {
         </Alert>
       )}
       <div className="container text-center mt-2">
-        <h1 className="text-center mb-4">
+        <h1 className="text-center mb-4" style={{ fontFamily: "Courier New, monospace", paddingTop: "20px"}}>
           Mental Health Professionals Near Me
         </h1>
-        <div className="row">
+        <div className="row" style={{ fontFamily: "Courier New, monospace"}}>
           {allMhps.map(
             ({
               Username,

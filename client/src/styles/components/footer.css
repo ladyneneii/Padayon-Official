@@ -7,6 +7,7 @@
   text-align: left;
   font: bold 16px sans-serif;
   padding: 55px 50px;
+  
 }
 
 .footer-distributed .footer-left,
@@ -31,7 +32,8 @@
 }
 
 .footer-distributed h3 span {
-  color: rgb(73, 192, 186);
+  color: rgb(50, 86, 84);
+  
 }
 
 /* Footer links */
@@ -96,9 +98,10 @@
 }
 
 .footer-distributed .footer-center p a {
-  color: rgb(15, 107, 246);
+  color: rgb(83, 131, 204);
   text-decoration: none;
 }
+
 
 .footer-distributed .footer-links a:before {
   content: "|";
@@ -108,6 +111,8 @@
   color: #fff;
   display: inline-block;
   padding-right: 5px;
+  
+
 }
 
 .footer-distributed .footer-links .link-1:before {
@@ -175,4 +180,5 @@
   .footer-distributed .footer-center i {
     margin-left: 0;
   }
+  
 }

@@ -154,7 +154,7 @@ const PostsPage = () => {
   return (
     <>
       <Navbar></Navbar>
-      <section className="p-5 overflow-x-auto">
+      <section className="p-5 overflow-x-auto" style={{ fontFamily: "Courier New, monospace", paddingTop: "20px"}}>
         <h1 className="mb-4">Safe Space</h1>
 
         <Post

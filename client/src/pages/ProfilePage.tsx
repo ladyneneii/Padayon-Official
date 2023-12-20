@@ -142,7 +142,7 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <div className="container mt-3 p-3 profile-container">
+      <div className="container mt-3 p-3 profile-container" style={{ fontFamily: "Courier New, monospace", paddingTop: "20px"}}>
         {userDetails ? (
           // Destructure userDetails outside JSX
           (() => {
@@ -303,6 +303,7 @@ const ProfilePage = () => {
               </div>
             );
           })()
+        
         ) : (
           <p>User info not found</p>
         )}
