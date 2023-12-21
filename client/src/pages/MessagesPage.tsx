@@ -6,6 +6,7 @@ import Chat from "../components/messages/Chat";
 import PrivateChat from "../components/messages/PrivateChat";
 import "../styles/pages/messages.css";
 import Button from "../components/Button";
+import Alert from "../components/Alert";
 import { PrivateRoomComponentProps } from "../components/messages/PrivateRoomsList";
 import PrivateRoomsList from "../components/messages/PrivateRoomsList";
 
@@ -20,6 +21,9 @@ interface RoomProps {
 }
 
 const MessagesPage = () => {
+  const [errMsg, setErrMsg] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
   const [privateRooms, setPrivateRooms] = useState<PrivateRoomComponentProps[]>(
     []
   );
@@ -45,6 +49,10 @@ const MessagesPage = () => {
       logged_in_user_id = JSON.parse(user_details_str).user_id;
     } else {
       console.error("user details not found in the local storage.");
+      setErrMsg(
+        "You are viewing this page as a guest. It is recommended to create an account so you have full access to our services."
+      );
+      setIsLoggedIn(false);
     }
 
     const fetchPrivateRooms = async (logged_in_user_id: string) => {
@@ -155,6 +163,11 @@ const MessagesPage = () => {
   return (
     <>
       <Navbar></Navbar>
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
+          {errMsg}
+        </Alert>
+      )}
       <div className="container-xxl mt-4 pt-5">
         <div className="row">
           <div className="col messages__col">
@@ -176,6 +189,7 @@ const MessagesPage = () => {
                     placeholder="Room Title..."
                     ref={roomRef}
                     onChange={handleRoomChange}
+                    disabled={!isLoggedIn}
                   />
                 </div>
 
@@ -185,6 +199,7 @@ const MessagesPage = () => {
                     className="form-control"
                     placeholder="Password..."
                     onChange={handlePwdChange}
+                    disabled={!isLoggedIn}
                   />
                 </div>
 

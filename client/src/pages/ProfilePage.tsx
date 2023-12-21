@@ -6,12 +6,14 @@ import Footer from "../components/Footer";
 import { useParams, useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import "../styles/pages/profile.css";
+import Alert from "../components/Alert";
 
 const socket = io("http://localhost:3001");
 
 interface MHPFullInfoProps {
   user_id: string;
   Username: string;
+  State: string;
   firebase_avatar_url: string;
   first_name: string;
   middle_name: string;
@@ -41,11 +43,15 @@ const ProfilePage = () => {
   const [userDetails, setUserDetails] = useState<MHPFullInfoProps | null>(null);
   const [loggedInUserId, setLoggedInUserId] = useState("");
   const [loggedInUsername, setLoggedInUsername] = useState("");
+  const [loggedInRole, setLoggedInRole] = useState("");
 
   let username = "";
   let logged_in_user_id = "";
   let logged_in_username = "";
-  const [avatarUrl, setAvatarUrl] = useState("");
+
+  const [errMsg, setErrMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -55,8 +61,13 @@ const ProfilePage = () => {
     if (user_details_str) {
       logged_in_user_id = JSON.parse(user_details_str).user_id;
       logged_in_username = JSON.parse(user_details_str).Username;
+      setLoggedInRole(JSON.parse(user_details_str).Role);
     } else {
       console.error("user details not found in the local storage.");
+      setErrMsg(
+        "You are viewing this page as a guest. It is recommended to create an account so you have full access to our services."
+      );
+      setIsLoggedIn(false);
     }
     username = !user ? logged_in_username : user;
 
@@ -139,9 +150,46 @@ const ProfilePage = () => {
     }
   };
 
+  const handleVerifyMHP = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    user_id: string
+  ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/users_role/${user_id}`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        console.log("Succesfully verified mhp.");
+        setSuccessMsg("Successfully verified this mental health professional.");
+      } else {
+        console.log(response);
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during PATCH request:", error);
+
+      return;
+    }
+  };
+
   return (
     <>
       <Navbar />
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
+          {errMsg}
+        </Alert>
+      )}
+      {successMsg && (
+        <Alert color="success" setErrMsg={setSuccessMsg}>
+          {successMsg}
+        </Alert>
+      )}
       <div className="container mt-3 p-3 profile-container">
         {userDetails ? (
           // Destructure userDetails outside JSX
@@ -157,6 +205,7 @@ const ProfilePage = () => {
               Gender,
               Pronouns,
               DistanceAway,
+              State,
               disorders_specializations,
               years_of_experience,
               Languages,
@@ -203,6 +252,13 @@ const ProfilePage = () => {
                 .join(", ");
             }
 
+            let showMhpSection =
+              (Role === "mhp" && State === "Active") ||
+              (Role === "mhp" &&
+                State === "Unverified" &&
+                loggedInRole === "admin") ||
+              Username === loggedInUsername;
+
             return (
               <div className="row">
                 <div className="col">
@@ -216,14 +272,14 @@ const ProfilePage = () => {
                     className="border rounded-circle profile-picture"
                   />
                   <h2 className="mt-4">
-                    {first_name} {middle_name}{" "}
-                    {last_name}{" "}
+                    {first_name} {middle_name} {last_name}{" "}
                     <span className="text-body-tertiary">({Username})</span>
                   </h2>
                   <h4>
-                    {Role === "mhp"
+                    {Role === "mhp" && State === "Active"
                       ? "Mental Health Professional"
-                      : Role === "nmhp"
+                      : Role === "nmhp" ||
+                        (Role === "mhp" && State === "Unverified")
                       ? "Not a Mental Health Professional"
                       : "Admin"}
                   </h4>
@@ -241,14 +297,37 @@ const ProfilePage = () => {
                       <Button
                         color="primary"
                         onClick={(e) => handleMessage(e, user_id, Username)}
+                        disabled={!isLoggedIn}
                       >
                         Message
                       </Button>
                     )}
+                    {loggedInRole === "admin" && State === "Unverified" && (
+                      <Button
+                        color="primary"
+                        onClick={(e) => handleVerifyMHP(e, user_id)}
+                        disabled={!isLoggedIn}
+                      >
+                        Verify
+                      </Button>
+                    )}
                   </div>
                 </div>
+
                 <div className="col">
-                  {Role === "mhp" && (
+                  {Role === "mhp" &&
+                    State === "Unverified" &&
+                    loggedInRole === "admin" && (
+                      <h3 className="text-danger mb-3">
+                        ONLY VISIBLE TO ADMINS:
+                      </h3>
+                    )}
+                  {Username === loggedInUsername && State === "Unverified" && (
+                    <h3 className="text-danger mb-3">
+                      MENTAL HEALTH PROFESSIONAL APPLICATION
+                    </h3>
+                  )}
+                  {showMhpSection && (
                     <>
                       <div className="mt-2">
                         <h5>Disorders Specializations:</h5>
@@ -299,7 +378,7 @@ const ProfilePage = () => {
             );
           })()
         ) : (
-          <p>User info not found</p>
+          <p>User info not found. If you registered as a mental health professional, please answer the MHPForm upon signing in to see your account here.</p>
         )}
       </div>
       <Footer></Footer>

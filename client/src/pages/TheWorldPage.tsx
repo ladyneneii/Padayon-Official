@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import "leaflet/dist/leaflet.css"; // Import Leaflet CSS
 import L from "leaflet";
+import Alert from "../components/Alert";
+import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg";
 
 export interface PositionProps {
   coords: { latitude: number; longitude: number };
@@ -11,6 +13,8 @@ export interface PositionProps {
 }
 
 interface LocationProps {
+  Username: string;
+  firebase_avatar_url: string;
   location_id: number;
   user_id: number;
   Latitude: number;
@@ -22,6 +26,8 @@ const TheWorldPage = () => {
   const mapRef = useRef<L.Map | null>(null); // Create a ref for the map
   const [navbarHeight, setNavbarHeight] = useState(0);
   const [firstTime, setFirstTime] = useState(true);
+  const [errMsg, setErrMsg] = useState("");
+  const [firebaseAvatarUrl, setFirebaseAvatarUrl] = useState("");
 
   const handleNavbarHeightChange = (height: number) => {
     setNavbarHeight(height);
@@ -34,6 +40,11 @@ const TheWorldPage = () => {
     const tileUrl = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     const tiles = L.tileLayer(tileUrl, { attribution });
     tiles.addTo(mapRef.current);
+    const userIcon = L.icon({
+      iconUrl: firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl,
+      iconSize: [50, 50],
+      iconAnchor: [25, 25],
+    });
     const marker = L.marker([0, 0]).addTo(mapRef.current);
 
     const getPosition = async (position: PositionProps) => {
@@ -57,12 +68,32 @@ const TheWorldPage = () => {
           console.log(locations_json);
 
           locations_json.forEach((location: LocationProps) => {
-            const { Latitude, Longitude } = location;
+            const { Username, Latitude, Longitude, firebase_avatar_url } =
+              location;
 
             if (mapRef.current) {
-              const otherMarker = L.marker([0, 0]).addTo(mapRef.current);
+              const customIcon = L.icon({
+                iconUrl:
+                  firebase_avatar_url === "n/a"
+                    ? empty_pfp
+                    : firebase_avatar_url,
+                iconSize: [50, 50],
+                iconAnchor: [25, 25],
+              });
+
+              const otherMarker = L.marker([0, 0], { icon: customIcon }).addTo(
+                mapRef.current
+              );
 
               otherMarker.setLatLng([Latitude, Longitude]);
+
+              otherMarker.on("click", () => {
+                // Construct the link using the locationId or any other unique identifier
+                const link = `/ProfilePage/${Username}`;
+
+                // Navigate to the link
+                window.location.href = link;
+              });
             }
           });
         } else {
@@ -70,6 +101,18 @@ const TheWorldPage = () => {
         }
       } catch (error) {
         console.error("Error during GET request:", error);
+      }
+
+      const unparsed_user_details = localStorage.getItem("user_details");
+
+      if (unparsed_user_details) {
+        const user_details = JSON.parse(unparsed_user_details);
+        setFirebaseAvatarUrl(user_details.firebase_avatar_url);
+      } else {
+        console.log("User details not found.");
+        setErrMsg(
+          "You are viewing this page as a guest. It is recommended to create an account so you have full access to our services."
+        );
       }
     };
 
@@ -93,6 +136,11 @@ const TheWorldPage = () => {
   return (
     <>
       <Navbar handleNavbarHeightChange={handleNavbarHeightChange}></Navbar>
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
+          {errMsg}
+        </Alert>
+      )}
 
       <div
         id="nearYouMap"

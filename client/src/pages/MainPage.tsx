@@ -21,7 +21,7 @@ const MainPage = () => {
     latitude: number;
     longitude: number;
   } | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errMsg, setErrMsg] = useState<string>("");
   const [allMhps, setAllMhps] = useState<MHPCardDisplayInfoProps[]>([]);
 
   useEffect(() => {
@@ -119,6 +119,9 @@ const MainPage = () => {
         }
       } else {
         console.log("No user_details retrieved.");
+        setErrMsg(
+          "You are viewing this page as a guest. It is recommended to create an account so you have full access to our services."
+        );
       }
     };
 
@@ -127,28 +130,28 @@ const MainPage = () => {
         (position) => {
           const { latitude, longitude } = position.coords;
           setLocation({ latitude, longitude });
-          setError(null);
+          setErrMsg("");
           console.log(`This is the location: ${latitude} ${longitude}`);
           putLocation(latitude, longitude);
           fetchAllMHPsOrdered(latitude, longitude);
         },
         (error) => {
           // Error handling, including permission denial
-          setError(`Error getting geolocation: ${error.message}`);
+          setErrMsg(`Error getting geolocation: ${error.message}`);
           fetchAllMHPs();
         }
       );
     } else {
-      setError("Geolocation is not supported by your browser");
+      setErrMsg("Geolocation is not supported by your browser");
     }
   }, []);
 
   return (
     <>
       <Navbar></Navbar>
-      {error && (
-        <Alert color="danger" setAlert={setAlert}>
-          {error}
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
+          {errMsg}
         </Alert>
       )}
       <div className="container text-center mt-2">

@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Post from "../components/posts/Post";
-import Button from "../components/Button";
 import DisplayedPost from "../components/posts/DisplayedPost";
+import Alert from "../components/Alert";
 
 export interface PostProps {
   post_id: string;
@@ -72,6 +72,8 @@ const PostsPage = () => {
   const [showRemark, setShowRemark] = useState(false);
   const remarkRef = useRef<HTMLInputElement | null>(null);
   const privacyRef = useRef<HTMLSelectElement | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [errMsg, setErrMsg] = useState("");
 
   const handlePostContentChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -142,6 +144,10 @@ const PostsPage = () => {
       }
     } else {
       console.log("user_details not found in local storage.");
+      setErrMsg(
+        "You are viewing this page as a guest. It is recommended to create an account so you have full access to our services."
+      );
+      setIsLoggedIn(false);
     }
   };
 
@@ -154,6 +160,11 @@ const PostsPage = () => {
   return (
     <>
       <Navbar></Navbar>
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
+          {errMsg}
+        </Alert>
+      )}
       <section className="p-5 overflow-x-auto pt-5">
         <h1 className="mb-4">Safe Space</h1>
 

@@ -8,8 +8,8 @@ interface NavbarComponentProps {
 
 const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
   const navbarRef = useRef<HTMLElement>(null);
-  // let firebase_avatar_url = ""
   const [username, setUsername] = useState("");
+  const [loggedInRole, setLoggedInRole] = useState("");
 
   useEffect(() => {
     const navbarHeight = navbarRef.current ? navbarRef.current.clientHeight : 0;
@@ -26,9 +26,10 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
 
       // firebase_avatar_url = user_details.firebase_avatar_url;
       setUsername(user_details.Username);
+      setLoggedInRole(user_details.Role);
     } else {
       console.log("User details not found.");
-      setUsername("")
+      setUsername("");
     }
   });
 
@@ -40,10 +41,7 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
   return (
     <nav ref={navbarRef} className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <a
-          className="navbar-brand"
-          href="/MainPage"
-        >
+        <a className="navbar-brand" href="/MainPage">
           {username !== "" ? `Padayon, ${username}!` : "Padayon!"}
         </a>
         <button
@@ -57,10 +55,7 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div
-          className="collapse navbar-collapse"
-          id="navbarSupportedContent"
-        >
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link
@@ -91,6 +86,13 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
                 The World
               </Link>
             </li>
+            {loggedInRole === "admin" && (
+              <li className="nav-item">
+                <Link to="/AdminPage" className="nav-link">
+                  Admin
+                </Link>
+              </li>
+            )}
             {username !== "" ? (
               <li className="nav-item">
                 <Link to="/SignIn" className="nav-link" onClick={handleLogOut}>

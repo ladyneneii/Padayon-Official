@@ -3,13 +3,13 @@ import React, { useEffect } from "react";
 interface AlertComponentProps {
   color: string;
   children: string;
-  setAlert: React.Dispatch<React.SetStateAction<boolean>>;
+  setErrMsg: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const Alert = ({ color, children, setAlert }: AlertComponentProps) => {
+const Alert = ({ color, children, setErrMsg }: AlertComponentProps) => {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      setAlert(false);
+      setErrMsg("");
     }, 5000);
 
     return () => clearTimeout(timeoutId);

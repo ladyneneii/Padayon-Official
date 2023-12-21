@@ -1,0 +1,9 @@
+.pending-mhp {
+  text-decoration: none;
+  color: inherit;
+}
+
+.pending-mhp:hover {
+  cursor: pointer;
+  opacity: 0.8;
+}

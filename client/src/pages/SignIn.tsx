@@ -6,13 +6,13 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Alert from "../components/Alert";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_=+]).{8,24}$/;
 
 const SignIn = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
-  const errRef = useRef<HTMLDivElement | null>(null);
 
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
@@ -80,8 +80,6 @@ const SignIn = () => {
         };
 
         if (State === "Active") {
-          console.log("User retrieved successfully!");
-
           localStorage.setItem(
             "user_details",
             JSON.stringify(user_object_localstorage)
@@ -101,17 +99,39 @@ const SignIn = () => {
               "user_details",
               JSON.stringify(user_object_localstorage)
             );
-            navigate("/MHPFormPage");
+
+            try {
+              const response = await fetch(
+                `http://localhost:3001/api/mhps/${user_id}`
+              );
+
+              if (response.ok) {
+                const result = await response.text();
+
+                if (result === "Unverified-0") {
+                  navigate("/MHPFormPage");
+                } else if (result === "Unverified-1") {
+                  navigate("/MainPage");
+                }
+              } else {
+                const errorMessage = await response.text();
+                console.error("Error message:", errorMessage);
+
+                return;
+              }
+            } catch (error) {
+              console.error("Error during POST request:", error);
+
+              return;
+            }
           }
         }
       } else {
-        console.error("User does not exist. Please create an account.");
         setErrMsg("User does not exist. Please create an account.");
 
         return;
       }
     } catch (error) {
-      console.error("Error during GET request:", error);
       setErrMsg("Error during GET request:");
 
       return;
@@ -120,16 +140,14 @@ const SignIn = () => {
 
   return (
     <>
-    <Navbar></Navbar>
+      <Navbar></Navbar>
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
+          {errMsg}
+        </Alert>
+      )}
       <section className="container-sm pt-5">
         <section>
-          <p
-            ref={errRef}
-            className={errMsg ? "errmsg" : "offscreen"}
-            aria-live="assertive"
-          >
-            {errMsg}
-          </p>
           <h1>Sign In</h1>
           <h3>Welcome to Padayon!</h3>
           {/* START OF FORM */}

@@ -237,9 +237,9 @@ const Register = () => {
 
       const middleName = middleNameRef.current
         ? middleNameRef.current.value
-        : "n/a";
+        : "";
       const gender = genderRef.current ? genderRef.current.value : "PNTS";
-      const pronouns = pronounsRef.current ? pronounsRef.current.value : "n/a";
+      const pronouns = pronounsRef.current ? pronounsRef.current.value : "";
 
       formData.append("Username", user);
       formData.append("Email", email);
@@ -371,8 +371,8 @@ const Register = () => {
   return (
     <>
       <Navbar></Navbar>
-      {alert && (
-        <Alert color="danger" setAlert={setAlert}>
+      {errMsg && (
+        <Alert color="danger" setErrMsg={setErrMsg}>
           {errMsg}
         </Alert>
       )}

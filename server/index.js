@@ -219,6 +219,110 @@ app.post("/api/users", upload.single("avatar_url"), (req, res) => {
   });
 });
 
+// update State from Unverified to Active
+app.patch("/api/users_role/:user_id", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    connection.query(
+      "UPDATE users SET State = ? WHERE user_id = ?",
+      ["Active", req.params.user_id],
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+
+        if (!err) {
+          res.json(rows);
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  });
+});
+
+// Retrieve mhp with inputted user_id
+app.get("/api/mhps/:user_id", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+
+    connection.query(
+      "SELECT State FROM users WHERE user_id = ?",
+      [req.params.user_id],
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+
+        if (!err) {
+          if (rows.length === 0) {
+            res.status(404).send("Nonexistent");
+          } else {
+            if (rows[0].State === "Active") {
+              res.send("Active");
+            } else if (rows[0].State === "Unverified") {
+              connection.query(
+                `SELECT 
+                  u.user_id
+                FROM 
+                  users u
+                JOIN 
+                  mental_health_professionals mhp 
+                ON 
+                  u.user_id = mhp.user_id
+                WHERE u.user_id = ?`,
+                [req.params.user_id],
+                (err, rows) => {
+                  connection.release(); // return the connection to pool
+
+                  if (!err) {
+                    if (rows.length === 0) {
+                      res.send("Unverified-0"); 
+                      // hasn't answered mhp form yet
+                    } else {
+                      res.send("Unverified-1");
+                      // has already answered it
+                    }
+                  } else {
+                    console.log(err);
+                  }
+                }
+              );
+            }
+          }
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  });
+});
+
+// Retrieve pending mhps
+app.get("/api/pending_mhps", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+
+    connection.query(
+      `SELECT
+        u.Username, u.firebase_avatar_url, mhp.license_number
+      FROM
+        users u
+      INNER JOIN 
+        mental_health_professionals mhp
+      ON 
+        u.user_id = mhp.user_id
+      WHERE 
+        u.State = "Unverified"`,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+
+        if (!err) {
+          res.json(rows);
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  });
+});
+
 // Add a mental health professional
 app.post("/api/mhps", upload.single("avatar_url"), (req, res) => {
   pool.getConnection((err, connection) => {
@@ -245,20 +349,7 @@ app.post("/api/mhps", upload.single("avatar_url"), (req, res) => {
                 connection.release(); // return the connection to pool
 
                 if (!err) {
-                  // update State from Unverified to Active
-                  connection.query(
-                    "UPDATE users SET State = ? WHERE user_id = ?",
-                    ["Active", params.user_id],
-                    (err, rows) => {
-                      connection.release(); // return the connection to pool
-
-                      if (!err) {
-                        res.json(rows);
-                      } else {
-                        console.log(err);
-                      }
-                    }
-                  );
+                  res.send(rows);
                 } else {
                   console.log(err);
                 }
@@ -298,6 +389,7 @@ app.get("/api/mhp_nhp_with_user_info/:usernameLatLon", (req, res) => {
                 `SELECT 
                   u.user_id,
                   u.Username,
+                  u.State,
                   u.firebase_avatar_url,
                   u.first_name,
                   u.middle_name,
@@ -331,6 +423,7 @@ app.get("/api/mhp_nhp_with_user_info/:usernameLatLon", (req, res) => {
 
                   if (!err) {
                     if (rows.length === 0) {
+                      console.log(username);
                       res.send("This mhp does not exist.");
                     } else {
                       if (lat1 && lon1) {
@@ -415,7 +508,7 @@ app.get("/api/mhps_with_user_info", (req, res) => {
         mental_health_professionals mhp ON u.user_id = mhp.user_id
       INNER JOIN
         locations l ON mhp.location_id = l.location_id
-      WHERE mhp.location_id IS NOT NULL`,
+      WHERE mhp.location_id IS NOT NULL AND u.State = "Active"`,
       (err, rows) => {
         connection.release(); // return the connection to pool
 
@@ -473,7 +566,7 @@ app.get("/api/mhps_with_user_info_ordered/:latLon", (req, res) => {
         mental_health_professionals mhp ON u.user_id = mhp.user_id
       INNER JOIN
         locations l ON mhp.location_id = l.location_id
-      WHERE mhp.location_id IS NOT NULL
+      WHERE mhp.location_id IS NOT NULL AND u.State = "Active"
       ORDER BY
         l.Latitude, l.Longitude`,
       (err, rows) => {
@@ -834,7 +927,20 @@ app.put("/api/locations", upload.single("avatar_url"), (req, res) => {
 app.get("/api/locations", (req, res) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
-    connection.query("SELECT * FROM locations", (err, rows) => {
+    connection.query(
+      `SELECT u.*, l.* 
+      FROM 
+        locations l 
+      INNER JOIN
+        mental_health_professionals mhp
+      ON 
+        l.location_id = mhp.location_id
+      INNER JOIN 
+        users u
+      ON 
+        mhp.user_id = u.user_id
+      WHERE
+        u.State = "Active"`, (err, rows) => {
       connection.release(); // return the connection to pool
 
       if (!err) {

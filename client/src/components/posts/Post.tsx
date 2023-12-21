@@ -35,6 +35,7 @@ const Post = ({
   privacyRef,
   setDummyState,
 }: PostComponentProps) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [firebaseAvatarUrl, setFirebaseAvatarUrl] = useState("");
   const replyIndent = postReplyLevel === 0 ? 65 : replyMode ? 115 : 0;
 
@@ -91,7 +92,7 @@ const Post = ({
         <div className="d-flex align-items-center">
           <Link to="/ProfilePage">
             <img
-              src={firebaseAvatarUrl === "n/a" ? empty_pfp : firebaseAvatarUrl}
+              src={firebaseAvatarUrl === "n/a" || !isLoggedIn ? empty_pfp : firebaseAvatarUrl}
               alt="profile picture"
               className="rounded-circle empty_profile_picture_icon me-3"
             />
@@ -102,6 +103,7 @@ const Post = ({
               placeholder="What's on your mind?"
               ref={postRef}
               onChange={onChange}
+              disabled={!isLoggedIn}
             ></textarea>
             <label htmlFor="post">What's on your mind?</label>
           </div>
