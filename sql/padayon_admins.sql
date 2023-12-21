@@ -16,29 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `locations`
+-- Table structure for table `admins`
 --
 
-DROP TABLE IF EXISTS `locations`;
+DROP TABLE IF EXISTS `admins`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `locations` (
-  `location_id` int NOT NULL AUTO_INCREMENT,
-  `Latitude` float DEFAULT NULL,
-  `Longitude` float DEFAULT NULL,
-  `Address` text,
-  PRIMARY KEY (`location_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `admins` (
+  `admin_id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `validate_mhp` tinyint(1) DEFAULT NULL,
+  `hide_post` tinyint(1) DEFAULT NULL,
+  `give_penalty` tinyint(1) DEFAULT NULL,
+  `create_users` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`admin_id`),
+  KEY `user_id` (`user_id`),
+  CONSTRAINT `admins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `locations`
+-- Dumping data for table `admins`
 --
 
-LOCK TABLES `locations` WRITE;
-/*!40000 ALTER TABLE `locations` DISABLE KEYS */;
-INSERT INTO `locations` VALUES (74,10.3403,123.942,'n/a'),(75,10.3157,123.883,'n/a'),(76,10.3157,123.911,'n/a'),(77,10.337,123.938,'n/a'),(78,10.3403,123.942,'n/a'),(79,10.3157,123.912,'n/a'),(80,10.315,123.885,'n/a'),(81,10.336,123.938,'n/a'),(82,10.3157,123.855,'n/a'),(83,10.3187,123.485,'n/a'),(84,10.314,123.81,'n/a'),(85,10.3157,123.8,'n/a'),(86,10.3157,123.885,'n/a'),(87,10.3372,123.925,'n/a'),(88,10.3372,123.938,'n/a'),(89,10.3403,123.98,'n/a'),(90,10.3403,123.942,'n/a'),(91,10.3403,121.942,'n/a'),(92,10.3403,123.942,'n/a'),(93,10.3372,123.938,'n/a'),(94,10.3403,123.942,'n/a'),(95,10.3372,123.938,'n/a'),(96,10.3403,123.942,'n/a'),(97,10.3403,123.942,'n/a'),(98,10.3403,123.942,'n/a'),(99,10.3403,123.942,'n/a'),(100,10.3372,123.938,'n/a'),(101,10.3403,123.942,'n/a'),(102,10.3372,123.938,'n/a');
-/*!40000 ALTER TABLE `locations` ENABLE KEYS */;
+LOCK TABLES `admins` WRITE;
+/*!40000 ALTER TABLE `admins` DISABLE KEYS */;
+INSERT INTO `admins` VALUES (1,64,1,1,1,1);
+/*!40000 ALTER TABLE `admins` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -50,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-19  0:28:21
+-- Dump completed on 2023-12-21 21:49:01
