@@ -35,7 +35,7 @@ CREATE TABLE `private_rooms` (
   KEY `fk_member2_user` (`member2_user_id`),
   CONSTRAINT `fk_member1_user` FOREIGN KEY (`member1_user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `fk_member2_user` FOREIGN KEY (`member2_user_id`) REFERENCES `users` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
