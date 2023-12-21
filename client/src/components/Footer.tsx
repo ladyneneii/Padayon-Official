@@ -8,12 +8,10 @@ const Footer = () => {
     <footer className="footer-distributed">
       <div className="footer-left">
         <div className="footer-left-centered">
-          <img
-            src={Logo}
-            alt="Padayon Logo"
-            className="padayon-logo"
-          />
-          <p className="footer-company-name">FlopQueens © 2023</p>
+          <img src={Logo} alt="Padayon Logo" className="padayon-logo" />
+          <p className="footer-company-name">
+            FlopQueens © {new Date().getFullYear()}
+          </p>
         </div>
       </div>
 
@@ -33,9 +31,7 @@ const Footer = () => {
         <div>
           <i className="fa fa-envelope"></i>
           <p>
-            <a href="mailto:flopqueens@gmail.com">
-              flopqueens@gmail.com
-            </a>
+            <a href="mailto:flopqueens@gmail.com">flopqueens@gmail.com</a>
           </p>
         </div>
       </div>

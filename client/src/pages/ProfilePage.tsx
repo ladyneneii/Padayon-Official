@@ -216,7 +216,7 @@ const ProfilePage = () => {
                     className="border rounded-circle profile-picture"
                   />
                   <h2 className="mt-4">
-                    {first_name} {middle_name === "n/a" ? "" : middle_name}{" "}
+                    {first_name} {middle_name}{" "}
                     {last_name}{" "}
                     <span className="text-body-tertiary">({Username})</span>
                   </h2>
@@ -229,7 +229,7 @@ const ProfilePage = () => {
                   </h4>
                   <h4>{Age}</h4>
                   <h4>{Gender === "PNTS" ? "" : Gender}</h4>
-                  <h4>{Pronouns === "n/a" ? "" : Pronouns}</h4>
+                  <h4>{Pronouns}</h4>
                   {DistanceAway && (
                     <h6 className="text-secondary">
                       {DistanceAway.metersAway} m away /{" "}

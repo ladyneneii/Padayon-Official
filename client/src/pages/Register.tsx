@@ -48,8 +48,23 @@ const Register = () => {
   const firstNameRef = useRef<HTMLInputElement | null>(null);
   const errRef = useRef<HTMLDivElement | null>(null);
 
+  const [firstName, setFirstName] = useState("");
+  const [validFirstName, setValidFirstName] = useState(false);
+
+  const middleNameRef = useRef<HTMLInputElement>(null);
+
+  const [lastName, setLastName] = useState("");
+  const [validLastName, setValidLastName] = useState(false);
+
+  const [age, setAge] = useState("");
+  const [validAge, setValidAge] = useState(false);
+
+  const genderRef = useRef<HTMLSelectElement>(null);
+
+  const pronounsRef = useRef<HTMLInputElement>(null);
+
   const [user, setUser] = useState("");
-  const [validName, setValidName] = useState(false);
+  const [validUser, setValidUser] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -80,7 +95,7 @@ const Register = () => {
     const result = USER_REGEX.test(user);
     // console.log(result);
     // console.log(user);
-    setValidName(result);
+    setValidUser(result);
   }, [user]);
 
   useEffect(() => {
@@ -114,6 +129,24 @@ const Register = () => {
     }
   }, [success, selectedUserType, notVerifiedProfessional]);
 
+  const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newFirstName = e.target.value;
+    setValidFirstName(newFirstName.length === 0 ? false : true);
+    setFirstName(newFirstName);
+  };
+
+  const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newLastName = e.target.value;
+    setValidLastName(newLastName.length === 0 ? false : true);
+    setLastName(newLastName);
+  };
+
+  const handleAgeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newAge = e.target.value;
+    setValidAge(newAge.length === 0 ? false : true);
+    setAge(newAge);
+  };
+
   const handleUserTypeChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSelectedUserType(e.target.value);
   };
@@ -129,30 +162,15 @@ const Register = () => {
     const file = fileInputRef.current?.files?.[0] || "n/a";
     if (!v1 || !v2 || !v3) {
       setErrMsg("Invalid Entry");
-      setAlert(true)
-      setIsLoading(false)
+      setAlert(true);
+      setIsLoading(false);
       return;
     }
-
-    const firstName = (document.querySelector("#firstName") as HTMLInputElement)
-      .value;
-    const middleName = (
-      document.querySelector("#middleName") as HTMLInputElement | null
-    )?.value;
-    const lastName = (document.querySelector("#lastName") as HTMLInputElement)
-      .value;
-    const age = (document.querySelector("#age") as HTMLInputElement).value;
-    const gender = (
-      document.querySelector("#gender") as HTMLSelectElement | null
-    )?.value;
-    const pronouns = (
-      document.querySelector("#pronouns") as HTMLInputElement | null
-    )?.value;
 
     if (!age || parseInt(age, 10) <= 0 || parseInt(age, 10) >= 150) {
       setErrMsg("Please enter a valid age.");
       setAlert(true);
-      setIsLoading(false)
+      setIsLoading(false);
       return;
     }
 
@@ -217,6 +235,12 @@ const Register = () => {
           ? "Unverified"
           : "Active";
 
+      const middleName = middleNameRef.current
+        ? middleNameRef.current.value
+        : "n/a";
+      const gender = genderRef.current ? genderRef.current.value : "PNTS";
+      const pronouns = pronounsRef.current ? pronounsRef.current.value : "n/a";
+
       formData.append("Username", user);
       formData.append("Email", email);
       formData.append("Password", pwd);
@@ -225,11 +249,11 @@ const Register = () => {
       formData.append("register_date", register_date);
       formData.append("State", state);
       formData.append("first_name", firstName);
-      formData.append("middle_name", middleName || "n/a");
+      formData.append("middle_name", middleName);
       formData.append("last_name", lastName);
       formData.append("Age", age);
-      formData.append("Gender", gender || "n/a");
-      formData.append("Pronouns", pronouns || "n/a");
+      formData.append("Gender", gender);
+      formData.append("Pronouns", pronouns);
       formData.append("firebase_avatar_url", downloadURL || "n/a");
 
       // add data to database
@@ -260,11 +284,11 @@ const Register = () => {
             register_date,
             State: state,
             first_name: firstName,
-            middle_name: middleName || "n/a",
+            middle_name: middleName,
             last_name: lastName,
             Age: age,
-            Gender: gender || "n/a",
-            Pronouns: pronouns || "n/a",
+            Gender: gender,
+            Pronouns: pronouns,
             firebase_avatar_url: downloadURL || "n/a",
           };
 
@@ -376,6 +400,7 @@ const Register = () => {
               ref={firstNameRef}
               required
               className="form-control"
+              onChange={handleFirstNameChange}
             />
           </div>
 
@@ -387,6 +412,7 @@ const Register = () => {
             <input
               type="text"
               id="middleName"
+              ref={middleNameRef}
               className="form-control"
               placeholder="Skip if you don't have any."
             />
@@ -402,6 +428,7 @@ const Register = () => {
               id="lastName"
               required
               className="form-control"
+              onChange={handleLastNameChange}
             />
           </div>
 
@@ -411,12 +438,12 @@ const Register = () => {
               Username:
               <FontAwesomeIcon
                 icon={faCheck}
-                className={`custom-check-icon ${validName ? "valid" : "hide"}`}
+                className={`custom-check-icon ${validUser ? "valid" : "hide"}`}
               />
               <FontAwesomeIcon
                 icon={faTimes}
                 className={`custom-times-icon ${
-                  validName || !user ? "hide" : "invalid"
+                  validUser || !user ? "hide" : "invalid"
                 }`}
               />
             </label>
@@ -427,7 +454,7 @@ const Register = () => {
               onChange={(e) => setUser(e.target.value)}
               value={user}
               required
-              aria-invalid={validName ? "false" : "true"}
+              aria-invalid={validUser ? "false" : "true"}
               aria-describedby="uidnote"
               onFocus={() => setUserFocus(true)} // input has focus
               onBlur={() => setUserFocus(false)} // input doesn't have focus anymore
@@ -436,7 +463,7 @@ const Register = () => {
             <p
               id="uidnote"
               className={
-                userFocus && user && !validName ? "instructions" : "offscreen"
+                userFocus && user && !validUser ? "instructions" : "offscreen"
               }
             >
               <FontAwesomeIcon icon={faInfoCircle} />
@@ -617,12 +644,23 @@ const Register = () => {
           <div className="row">
             <div className="mb-3 col">
               <label className="form-label">Age</label>
-              <input type="number" className="form-control" id="age" required />
+              <input
+                type="number"
+                className="form-control"
+                id="age"
+                onChange={handleAgeChange}
+                required
+              />
             </div>
 
             <div className="mb-3 col">
               <label className="form-label">Gender (Optional)</label>
-              <select className="form-select" id="gender" defaultValue="PNTS">
+              <select
+                className="form-select"
+                id="gender"
+                ref={genderRef}
+                defaultValue="PNTS"
+              >
                 <option value="PNTS">Prefer not to say</option>
                 <option value="Woman">Woman</option>
                 <option value="Non-Binary">Non-Binary</option>
@@ -637,6 +675,7 @@ const Register = () => {
                 type="text"
                 className="form-control"
                 id="pronouns"
+                ref={pronounsRef}
                 placeholder="e.g. she/her, he/him, they/them, etc."
               />
             </div>
@@ -659,7 +698,14 @@ const Register = () => {
           <Button
             color="primary"
             onClick={handleSubmit}
-            disabled={!validName || !validPwd || !validMatch}
+            disabled={
+              !validFirstName ||
+              !validLastName ||
+              !validAge ||
+              !validUser ||
+              !validPwd ||
+              !validMatch
+            }
           >
             Sign Up
           </Button>
