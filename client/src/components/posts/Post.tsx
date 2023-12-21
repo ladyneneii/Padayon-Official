@@ -48,6 +48,7 @@ const Post = ({
       // firebase_avatar_url = user_details.firebase_avatar_url;
       setFirebaseAvatarUrl(user_details.firebase_avatar_url);
     } else {
+      setIsLoggedIn(false)
       console.log("User details not found.");
     }
   });
