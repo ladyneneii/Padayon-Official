@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Link } from "react-router-dom";
-import empty_pfp from "../assets/img/empty-profile-picture-612x612.jpg";
 
 interface NavbarComponentProps {
   handleNavbarHeightChange?: (height: number) => void;
@@ -29,6 +28,7 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
       setUsername(user_details.Username);
     } else {
       console.log("User details not found.");
+      setUsername("")
     }
   });
 
@@ -40,7 +40,10 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
   return (
     <nav ref={navbarRef} className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
-        <a className="navbar-brand" href="/MainPage" style={{ fontFamily: "Courier New, monospace"}}>
+        <a
+          className="navbar-brand"
+          href="/MainPage"
+        >
           {username !== "" ? `Padayon, ${username}!` : "Padayon!"}
         </a>
         <button
@@ -54,7 +57,10 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="navbarSupportedContent" style={{ fontFamily: "Courier New, monospace", color: "#fff" }}>
+        <div
+          className="collapse navbar-collapse"
+          id="navbarSupportedContent"
+        >
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <Link
@@ -85,11 +91,26 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
                 The World
               </Link>
             </li>
-            <li className="nav-item">
-              <Link to="/SignIn" className="nav-link" onClick={handleLogOut}>
-                Log Out
-              </Link>
-            </li>
+            {username !== "" ? (
+              <li className="nav-item">
+                <Link to="/SignIn" className="nav-link" onClick={handleLogOut}>
+                  Log Out
+                </Link>
+              </li>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link to="/SignIn" className="nav-link">
+                    Sign In
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/" className="nav-link">
+                    Register
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
           <form className="d-flex me-3" role="search">
             <input

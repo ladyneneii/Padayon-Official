@@ -7,7 +7,6 @@
   text-align: left;
   font: bold 16px sans-serif;
   padding: 55px 50px;
-  
 }
 
 .footer-distributed .footer-left,
@@ -23,6 +22,11 @@
   width: 40%;
 }
 
+.footer-left-centered {
+  display: inline-block;
+  text-align: center;
+}
+
 /* The company logo */
 
 .footer-distributed h3 {
@@ -33,7 +37,12 @@
 
 .footer-distributed h3 span {
   color: rgb(50, 86, 84);
-  
+}
+
+.padayon-logo {
+  width: 450px;
+  height: auto;
+  padding-bottom: 20px;
 }
 
 /* Footer links */
@@ -53,8 +62,8 @@
 }
 
 .footer-distributed .footer-company-name {
-  color: #222;
-  font-size: 14px;
+  color: #8f9296;
+  font-size: 20px;
   font-weight: normal;
   margin: 0;
 }
@@ -100,8 +109,8 @@
 .footer-distributed .footer-center p a {
   color: rgb(83, 131, 204);
   text-decoration: none;
+  color: #fff;
 }
-
 
 .footer-distributed .footer-links a:before {
   content: "|";
@@ -111,8 +120,6 @@
   color: #fff;
   display: inline-block;
   padding-right: 5px;
-  
-
 }
 
 .footer-distributed .footer-links .link-1:before {
@@ -127,8 +134,8 @@
 
 .footer-distributed .footer-company-about {
   line-height: 20px;
-  color: #92999f;
-  font-size: 13px;
+  color: #fff;
+  font-size: 14px;
   font-weight: normal;
   margin: 0;
 }
@@ -136,13 +143,17 @@
 .footer-distributed .footer-company-about span {
   display: block;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 20px;
   font-weight: bold;
   margin-bottom: 20px;
 }
 
 .footer-distributed .footer-icons {
   margin-top: 25px;
+}
+
+.fa-white {
+  color: #fff;
 }
 
 .footer-distributed .footer-icons a {
@@ -180,5 +191,4 @@
   .footer-distributed .footer-center i {
     margin-left: 0;
   }
-  
 }

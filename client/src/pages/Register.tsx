@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, storage } from "../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import Navbar from "../components/Navbar2";
+import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
 import LoadingAnimation from "../components/LoadingAnimation";
@@ -354,7 +354,7 @@ const Register = () => {
       )}
       {isLoading && <LoadingAnimation></LoadingAnimation>}
 
-      <section className="container-sm py-5" style={{ fontFamily: "Courier New, monospace"}}>
+      <section className="container-sm py-5">
         <p
           ref={errRef}
           className={errMsg ? "errmsg" : "offscreen"}

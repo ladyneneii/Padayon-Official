@@ -142,11 +142,10 @@ const Post = ({
             </Button>
           )}
           <select
-            className="form-select d-inline mb-3 ms-auto"
+            className="form-select d-inline mb-3 ms-auto privacy-width"
             id="privacy"
             ref={privacyRef}
             defaultValue="Everyone"
-            style={{ width: "15%" }}
           >
             <option value="Everyone">Everyone</option>
             <option value="MHP">MHP</option>

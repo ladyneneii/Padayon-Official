@@ -142,7 +142,7 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <div className="container mt-3 p-3 profile-container" style={{ fontFamily: "Courier New, monospace", paddingTop: "20px"}}>
+      <div className="container mt-3 p-3 profile-container">
         {userDetails ? (
           // Destructure userDetails outside JSX
           (() => {
@@ -213,12 +213,7 @@ const ProfilePage = () => {
                         : firebase_avatar_url
                     }
                     alt="User avatar"
-                    className="border rounded-circle"
-                    style={{
-                      width: "250px",
-                      height: "250px",
-                      objectFit: "cover",
-                    }}
+                    className="border rounded-circle profile-picture"
                   />
                   <h2 className="mt-4">
                     {first_name} {middle_name === "n/a" ? "" : middle_name}{" "}
@@ -303,7 +298,6 @@ const ProfilePage = () => {
               </div>
             );
           })()
-        
         ) : (
           <p>User info not found</p>
         )}

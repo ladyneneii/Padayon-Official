@@ -155,7 +155,7 @@ const MessagesPage = () => {
   return (
     <>
       <Navbar></Navbar>
-      <div className="container-xxl mt-4" style={{ fontFamily: "Courier New, monospace", paddingTop: "20px"}}>
+      <div className="container-xxl mt-4 pt-5">
         <div className="row">
           <div className="col messages__col">
             <div className="messages__div shadow border rounded-5 border-0 p-4 mb-4">
