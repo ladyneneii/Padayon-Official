@@ -72,7 +72,9 @@ a {
 
 /* CUSTOM BOOTSTRAP STYLES */
 .container-sm {
-  width: 500px;
+  width: 100%; /* Adjusted to full width for responsiveness */
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .custom-check-icon {
@@ -132,4 +134,11 @@ a {
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+/* Responsive Styles */
+@media only screen and (max-width: 600px) {
+  .container-sm {
+    max-width: 100%;
+  }
 }

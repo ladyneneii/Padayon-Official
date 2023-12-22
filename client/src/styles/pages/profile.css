@@ -1,12 +1,31 @@
 .profile-container {
-    min-height: 100vh;
-    padding: 10px; /* Add some padding for spacing */
+  min-height: 100vh;
+  padding: 10px; /* Add some padding for spacing */
+}
+
+.profile-picture {
+  width: 100%;
+  max-width: 250px;
+  height: 250px;
+  object-fit: cover;
+}
+
+/* applies to profile, posts, admin */
+@media (max-width: 767px) {
+  .remove-row {
+    display: flex;
+    flex-direction: column;
   }
-  
-  .profile-picture {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    object-fit: cover;
+
+  .col {
+    text-align: center;
   }
-  
+
+  .ms-4 {
+    margin-left: 0px !important;
+  }
+
+  .mt-3 .me-2 {
+    margin: 5px 10px 10px !important;
+  }
+}

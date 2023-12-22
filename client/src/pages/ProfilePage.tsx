@@ -257,10 +257,10 @@ const ProfilePage = () => {
               (Role === "mhp" &&
                 State === "Unverified" &&
                 loggedInRole === "admin") ||
-              Username === loggedInUsername;
+              (Role === "mhp" && Username === loggedInUsername);
 
             return (
-              <div className="row">
+              <div className="remove-row row">
                 <div className="col">
                   <img
                     src={
@@ -331,7 +331,7 @@ const ProfilePage = () => {
                     <>
                       <div className="mt-2">
                         <h5>Disorders Specializations:</h5>
-                        <div className="d-flex flex-column align-items-start">
+                        <div>
                           {disorders_specializations_arr.map(
                             (disorders_specialization, index) => (
                               <p key={index} className="my-0 ms-4">
@@ -378,7 +378,11 @@ const ProfilePage = () => {
             );
           })()
         ) : (
-          <p>User info not found. If you registered as a mental health professional, please answer the MHPForm upon signing in to see your account here.</p>
+          <p>
+            User info not found. If you registered as a mental health
+            professional, please answer the MHPForm upon signing in to see your
+            account here.
+          </p>
         )}
       </div>
       <Footer></Footer>

@@ -158,7 +158,7 @@ const MainPage = () => {
         <h1 className="text-center mb-4 pt-5">
           Mental Health Professionals Near Me
         </h1>
-        <div className="row">
+        <div className="row border-primary">
           {allMhps.map(
             ({
               Username,
@@ -169,7 +169,10 @@ const MainPage = () => {
               DistanceAway,
               disorders_specializations,
             }) => (
-              <div key={Username} className="col">
+              <div
+                key={Username}
+                className="col text-center d-flex justify-content-center "
+              >
                 <Card
                   Username={Username}
                   firebase_avatar_url={firebase_avatar_url}

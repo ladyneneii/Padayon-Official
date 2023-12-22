@@ -62,7 +62,7 @@ const AdminPage = () => {
       ) : (
         <>
           <div className="container mt-3">
-            <div className="row">
+            <div className="remove-row row">
               <div className="col">
                 <h3 className="text-center mb-3">
                   Pending Mental Health Professionals

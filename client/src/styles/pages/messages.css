@@ -1,14 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 
-body {
-  margin: 0;
-  font-family: 'Open Sans', sans-serif;
-}
-
 .messages__col {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-bottom: 25px;
 }
 
 .messages__div {
@@ -17,7 +13,7 @@ body {
 }
 
 .private-chats-list-container {
-  flex-grow: 1;
+  height: 50%;
   overflow-y: auto;
 }
 
@@ -28,18 +24,33 @@ body {
 
 .chat-window {
   width: 100%;
-  flex-grow: 1;
+  /* height: 90vh; */
   border: 4px solid #e9ecef;
   border-radius: 15px;
 }
 
+.chat-window p {
+  margin: 0;
+}
+.chat-window .chat-header {
+  height: 45px;
+  background: #e9ecef;
+  position: relative;
+  cursor: pointer;
+}
+.chat-window .chat-header h4 {
+  display: block;
+  padding-left: 20px;
+  color: #1e1d1d;
+  line-height: 45px;
+}
+
 .chat-window .chat-body {
-  height: calc(100% - 50px);
+  height: calc(85vh - (45px + 50px));
   border: 1px solid #e9ecef;
   background: #fff;
   position: relative;
 }
-
 .chat-window .chat-body .message-container {
   width: 100%;
   height: 100%;
@@ -50,7 +61,6 @@ body {
 .chat-window .chat-body .message-container::-webkit-scrollbar {
   display: none;
 }
-
 .chat-window .chat-body .message {
   height: auto;
   padding: 8px;
@@ -86,6 +96,8 @@ body {
 #you .message-meta {
   justify-content: flex-end;
   width: fit-content;
+  align-self: flex-end;
+  /* margin-left: 5px; */
 }
 
 #you .very-flex-end {
@@ -108,11 +120,17 @@ body {
 #other .message-meta {
   justify-content: flex-start;
   width: fit-content;
+  /* margin-right: 5px; */
 }
 
 .message-meta #author {
   margin-left: 10px;
   font-weight: bold;
+}
+
+.chat-window .chat-body .message .message-meta {
+  display: flex;
+  font-size: 12px;
 }
 
 .chat-window .chat-footer {
@@ -125,7 +143,7 @@ body {
 }
 
 .chat-window .chat-footer input {
-  flex: 1;
+  flex: 85%;
   border: 0;
   padding: 0 0.7em;
   font-size: 1em;
@@ -134,4 +152,15 @@ body {
 
 .hide {
   opacity: 0 !important;
+}
+
+@media (max-width: 767px) {
+  .remove-row {
+    display: flex; 
+    flex-direction: column; 
+  }
+
+  .messages__div {
+    margin-bottom: 10px; 
+  }
 }
