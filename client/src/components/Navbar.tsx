@@ -93,6 +93,11 @@ const Navbar = ({ handleNavbarHeightChange }: NavbarComponentProps) => {
                 </Link>
               </li>
             )}
+            <li className="nav-item">
+              <Link to="/AboutPage" className="nav-link">
+                About
+              </Link>
+            </li>
             {username !== "" ? (
               <li className="nav-item">
                 <Link to="/SignIn" className="nav-link" onClick={handleLogOut}>

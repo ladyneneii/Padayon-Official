@@ -1,0 +1,27 @@
+.about__logo {
+  width: 70%;
+}
+
+.about__desc {
+  font-family: "Gaegu", sans-serif;
+  text-align: justify;
+  text-justify: inter-word;
+  text-indent: 10%;
+}
+
+.about__contact-us-img {
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+ .about__contact-us {
+    flex-wrap: wrap;
+    flex: 1;
+ }
+
+ .flop1, .flop2 {
+    margin-bottom: 18px;
+ }
+}

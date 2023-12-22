@@ -4,8 +4,7 @@
 }
 
 .profile-picture {
-  width: 100%;
-  max-width: 250px;
+  width: 250px;
   height: 250px;
   object-fit: cover;
 }

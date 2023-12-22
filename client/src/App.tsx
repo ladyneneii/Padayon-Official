@@ -13,6 +13,7 @@ import MessagesPage from "./pages/MessagesPage";
 import TheWorldPage from "./pages/TheWorldPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
+import AboutPage from "./pages/AboutPage";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:3001");
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/MessagesPage" element={<MessagesPage />} />
           <Route path="/TheWorldPage" element={<TheWorldPage />} />
           <Route path="/AdminPage" element={<AdminPage />} />
+          <Route path="/AboutPage" element={<AboutPage />} />
         </Routes>
       </Router>
     </main>
