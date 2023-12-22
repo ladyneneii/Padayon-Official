@@ -3,6 +3,7 @@ import empty_pfp from "../../assets/img/empty-profile-picture-612x612.jpg";
 import { ButtonProps } from "../Button";
 import Button from "../Button";
 import { Link } from "react-router-dom";
+import "../../styles/pages/posts.css"
 
 interface PostComponentProps extends ButtonProps {
   postRef: React.RefObject<HTMLTextAreaElement>;
@@ -126,6 +127,7 @@ const Post = ({
           <Button color={color} onClick={onClick} disabled={disabled}>
             {children}
           </Button>
+
           {!showRemark ? (
             <Button color="primary" onClick={handleTriggering} disabled={false}>
               Mark this as triggering
@@ -139,11 +141,13 @@ const Post = ({
               Unmark as triggering
             </Button>
           )}
+
           {replyMode && (
             <Button color="danger" onClick={handleReplyCancel} disabled={false}>
               Cancel
             </Button>
           )}
+
           <select
             className="form-select d-inline mb-3 ms-auto privacy-width"
             id="privacy"
@@ -155,6 +159,7 @@ const Post = ({
             <option value="Followers">Followers</option>
             <option value="Friends">Friends</option>
           </select>
+
         </div>
       </div>
     </>

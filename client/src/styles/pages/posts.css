@@ -7,3 +7,32 @@
   width: 20%;
 }
 
+@media (max-width: 767px) {
+  .my-3 {
+    flex-wrap: wrap; 
+  }
+
+  .my-3 > * {
+    margin: 0 8px 8px 0px !important;
+    flex-grow: 0; /* Do not allow children to grow */
+    flex-shrink: 0; /* Do not allow children to shrink */
+    display: inline-block;
+  }
+
+  .privacy-width {
+    min-width: 100px;
+  }
+
+  .my-3 > :nth-child(3) {
+    order: 2; /* Move the Cancel button to the second position */
+  }
+
+  .my-3 > :nth-child(2) {
+    order: 3; /* Move the Mark as Triggering button to the third position */
+  }
+
+  .my-3 > :nth-child(4) {
+    order: 4; /* Move the Cancel button to the second position */
+  }
+}
+
