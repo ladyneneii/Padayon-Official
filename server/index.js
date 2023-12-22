@@ -273,7 +273,7 @@ app.get("/api/mhps/:user_id", (req, res) => {
 
                   if (!err) {
                     if (rows.length === 0) {
-                      res.send("Unverified-0"); 
+                      res.send("Unverified-0");
                       // hasn't answered mhp form yet
                     } else {
                       res.send("Unverified-1");
@@ -940,15 +940,17 @@ app.get("/api/locations", (req, res) => {
       ON 
         mhp.user_id = u.user_id
       WHERE
-        u.State = "Active"`, (err, rows) => {
-      connection.release(); // return the connection to pool
+        u.State = "Active"`,
+      (err, rows) => {
+        connection.release(); // return the connection to pool
 
-      if (!err) {
-        res.send(rows);
-      } else {
-        console.log(err);
+        if (!err) {
+          res.send(rows);
+        } else {
+          console.log(err);
+        }
       }
-    });
+    );
   });
 });
 
@@ -970,34 +972,140 @@ app.post("/api/posts", upload.single("avatar_url"), (req, res) => {
   });
 });
 
-// Change a post
-app.patch("/api/posts", upload.single("avatar_url"), (req, res) => {
-  pool.getConnection((err, connection) => {
-    if (err) throw err;
-    const params = req.body;
+// Edit a post
+app.post(
+  "/api/edited_post/:post_id",
+  upload.single("avatar_url"),
+  (req, res) => {
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+      const params = req.body;
 
-    connection.query(
-      "UPDATE posts SET Content = ?, date_time = ?, Type = ?, Privacy = ?, Remark = ? WHERE post_id = ?",
-      [
-        params.Content,
-        params.date_time,
-        params.Type,
-        params.Privacy,
-        params.Remark,
-        params.post_id,
-      ],
-      (err, rows) => {
+      console.log(params.post_reply_id);
+      if (params.post_reply_id === "null") {
+        params.post_reply_id = null;
+      }
+
+      connection.query("INSERT INTO posts SET ?", params, (err, rows) => {
         connection.release(); // return the connection to pool
 
         if (!err) {
-          res.json(rows);
+          console.log(rows);
+          const editedPostId = rows.insertId;
+
+          // Set the previous post's isEdited to 1 so that it doesn't get displayed on the postpage and only shown when Edit History is clicked
+          connection.query(
+            "UPDATE posts SET isEdited = ? WHERE post_id = ?",
+            [1, req.params.post_id],
+            (err, rows) => {
+              connection.release(); // return the connection to pool
+
+              if (!err) {
+                // update the post_reply_id of the replies with the post_id of the edited post
+                connection.query(
+                  "UPDATE posts SET post_reply_id = ? WHERE post_reply_id = ?",
+                  [editedPostId, req.params.post_id],
+                  (err, rows) => {
+                    connection.release(); // return the connection to pool
+
+                    if (!err) {
+                      console.log("SUCCESS KWEEN.");
+                      res.json(rows);
+                    } else {
+                      console.log(err);
+                    }
+                  }
+                );
+              } else {
+                console.log(err);
+              }
+            }
+          );
         } else {
           console.log(err);
         }
+      });
+    });
+  }
+);
+
+// Edit a post
+app.get(
+  "/api/post_edit_history/:post_id",
+  upload.single("avatar_url"),
+  (req, res) => {
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+
+      connection.query(
+        "SELECT * FROM posts WHERE post_id = ?",
+        req.params.post_id,
+        (err, rows) => {
+          connection.release(); // return the connection to pool
+
+          if (!err) {
+            console.log(rows[0].post_edit_id);
+
+            getEditHistory(res, connection, rows[0].post_edit_id)
+              .then((editHistory) => {
+                // Send the response once all operations are complete
+                res.send(editHistory);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          } else {
+            console.log(err);
+          }
+        }
+      );
+    });
+  }
+);
+
+function getEditHistory(res, connection, post_id) {
+  return new Promise((resolve, reject) => {
+    let editHistory = [];
+
+    function innerCallback(err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(editHistory);
       }
-    );
+    }
+
+    function recursiveQuery(post_id) {
+      connection.query(
+        `SELECT 
+          p.*, u.firebase_avatar_url
+        FROM 
+          posts p 
+        INNER JOIN
+          users u
+        ON 
+          p.user_id = u.user_id
+        WHERE 
+          post_id = ${post_id}`,
+        (err, rows) => {
+          if (!err) {
+            if (rows.length > 0) {
+              editHistory.push(rows[0]);
+              recursiveQuery(rows[0].post_edit_id);
+            } else {
+              innerCallback(); // If there are no rows, signal completion directly
+            }
+          } else {
+            console.log(err);
+            innerCallback(err); // If an error occurs, pass it to the callback
+          }
+        }
+      );
+    }
+
+    recursiveQuery(post_id);
   });
-});
+}
 
 // Delete a post
 app.delete("/api/posts", upload.single("avatar_url"), (req, res) => {
@@ -1081,7 +1189,8 @@ app.get("/api/posts", (req, res) => {
         p.user_id = u.user_id
       WHERE 
         p.State != ? 
-        AND post_reply_id IS NULL 
+        AND post_reply_id IS NULL
+        AND isEdited = 0 
       ORDER BY 
         post_id DESC`,
       [State],
@@ -1120,7 +1229,8 @@ function getOrderedPosts(res, connection, ordered_rows, rows, callback) {
             p.user_id = u.user_id
           WHERE 
             p.post_reply_id = ? 
-            AND p.State != ?`,
+            AND p.State != ?
+            AND isEdited = 0`,
           [post_id, State],
           (err, replies) => {
             if (!err) {

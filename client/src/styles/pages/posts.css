@@ -7,9 +7,27 @@
   width: 20%;
 }
 
+.remove-after::after {
+  content: none !important;
+}
+
+.editHistoryContainer {
+  width: 500px;
+  height: 600px;
+  overflow: auto;
+  background-color: white;
+  border-radius: 15px;
+  z-index: 999;
+}
+
+.close-edit-history {
+  position: fixed !important;
+  right: 10px;
+}
+
 @media (max-width: 767px) {
   .my-3 {
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
   }
 
   .my-3 > * {
@@ -34,5 +52,8 @@
   .my-3 > :nth-child(4) {
     order: 4; /* Move the Cancel button to the second position */
   }
-}
 
+  .editHistoryContainer {
+    width: 85%;
+  }
+}

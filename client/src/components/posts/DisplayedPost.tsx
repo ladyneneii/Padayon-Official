@@ -93,6 +93,8 @@ const DisplayedPost = ({
   const [validRemark, setValidRemark] = useState(false);
   const [showRemark, setShowRemark] = useState(false);
   const [remarkContent, setRemarkContent] = useState(Remark);
+  const [showEditHistory, setShowEditHistory] = useState(false);
+  const [editHistory, setEditHistory] = useState<PostProps[]>([]);
   const remarkRef = useRef<HTMLInputElement | null>(null);
   const privacyRef = useRef<HTMLSelectElement | null>(null);
 
@@ -101,6 +103,10 @@ const DisplayedPost = ({
   const [showDisplayedRemark, setShowDisplayedRemark] = useState(false);
   const displayedRemarkRef = useRef<HTMLInputElement | null>(null);
 
+  const [showPostContentStates, setShowPostContentStates] = useState(
+    Array(editHistory.length).fill(false)
+  );
+
   const readTriggeringPost = () => {
     setShowPostContent(true);
   };
@@ -108,6 +114,29 @@ const DisplayedPost = ({
   const hidePostContent = () => {
     setShowPostContent(false);
   };
+
+  // Function to handle reading triggering post for a specific index
+  const readTriggeringPostEH = (index: number) => {
+    console.log("Read Triggering Post", index);
+    const updatedStates = showPostContentStates.map((state, i) =>
+      i === index ? true : state
+    );
+    setShowPostContentStates(updatedStates);
+    console.log(updatedStates);
+  };
+
+  // Function to hide post content for a specific index
+  const hidePostContentEH = (index: number) => {
+    console.log("Hide Post Content", index);
+    const updatedStates = showPostContentStates.map((state, i) =>
+      i === index ? false : state
+    );
+    setShowPostContentStates(updatedStates);
+  };
+
+  const handleEditHistoryCancel = () => {
+    setShowEditHistory(false)
+  }
 
   const handleRemarkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newRemarkContent = e.target.value;
@@ -194,30 +223,64 @@ const DisplayedPost = ({
     }
 
     const formData = new FormData();
-    formData.append("post_id", post_id);
+    formData.append("user_id", user_id);
+    formData.append("Username", Username);
     formData.append("Content", editedPostContent);
     formData.append("date_time", new Date().toISOString());
+    formData.append("post_reply_id", post_reply_id);
+    formData.append("post_reply_level", post_reply_level.toString());
     formData.append("Type", showDisplayedRemark ? "Triggering" : "Normal");
     formData.append(
       "Privacy",
       displayedPrivacyRef.current ? displayedPrivacyRef.current.value : "n/a"
     );
     formData.append("Remark", showDisplayedRemark ? remarkContent : "");
+    formData.append("post_edit_id", post_id);
+    formData.append("isEdited", "0");
 
     // update post content on the database
     try {
-      const response = await fetch("http://localhost:3001/api/posts", {
-        method: "PATCH",
-        body: formData,
-      });
+      const response = await fetch(
+        `http://localhost:3001/api/edited_post/${post_id}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
-        console.log("Successfully updated post on the database.");
+        console.log("Successfully added edited post to the database.");
         getAllPosts().then((posts_json) => setAllPosts(posts_json));
         setValidEditedPostContent(false);
         setIsEditing(false);
         setPostContent(editedPostContent);
         setShowDisplayedRemark(false);
+      } else {
+        console.error("Failed to update post on the database");
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during PATCH request:", error);
+
+      return;
+    }
+  };
+
+  const handleEditHistory = async () => {
+    // update post content on the database
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/post_edit_history/${post_id}`
+      );
+
+      if (response.ok) {
+        setShowEditHistory(true);
+        const editHistory = await response.json();
+
+        console.log(editHistory);
+        setEditHistory(editHistory);
+        setShowPostContentStates(Array(editHistory.length).fill(false));
       } else {
         console.error("Failed to update post on the database");
 
@@ -362,6 +425,119 @@ const DisplayedPost = ({
 
   return (
     <>
+      {showEditHistory && (
+        <div className="editHistoryContainer position-fixed z-2 top-50 start-50 translate-middle p-3 shadow">
+          <button
+            type="button"
+            className="btn-close close-edit-history"
+            onClick={handleEditHistoryCancel}
+          ></button>
+          {editHistory.map(
+            (
+              {
+                post_id,
+                user_id,
+                Username,
+                Content,
+                date_time,
+                State,
+                post_reply_id,
+                post_reply_level,
+                Type,
+                Privacy,
+                Remark,
+                post_edit_id,
+                isEdited,
+                firebase_avatar_url,
+              },
+              index
+            ) => {
+              const dateObject = new Date(date_time);
+              const optionsDate: Intl.DateTimeFormatOptions = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              };
+              const formattedDateHistory = dateObject.toLocaleDateString(
+                undefined,
+                optionsDate
+              );
+
+              const optionsTime: Intl.DateTimeFormatOptions = {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              };
+              const formattedTimeHistory = dateObject.toLocaleTimeString(
+                undefined,
+                optionsTime
+              );
+
+              return (
+                <div key={post_id}>
+                  <div className="user_details my-2">
+                    <Link to={`/ProfilePage/${Username}`}>
+                      <img
+                        src={
+                          firebase_avatar_url === "n/a"
+                            ? empty_pfp
+                            : firebase_avatar_url
+                        }
+                        alt="profile picture"
+                        className="rounded-circle empty_profile_picture_icon me-3"
+                      />
+                    </Link>
+                    <div className="username_date-time">
+                      <p className="my-0 fw-semibold">{Username}</p>
+                      <span className="fw-normal">
+                        {formattedDateHistory} {formattedTimeHistory}
+                      </span>
+                    </div>
+                  </div>
+                  {Type === "Triggering" && (
+                    <div className="form-floating mb-3">
+                      <p className="my-0 text-center fw-semibold text-danger">
+                        This post is triggering. Proceed with caution.
+                      </p>
+                      <p className="mb-3 text-center fw-semibold text-danger">
+                        Trigger warnings: {Remark}
+                      </p>
+                      <div className="text-center">
+                        {showPostContentStates[index] ? (
+                          <Button
+                            color="danger"
+                            onClick={() => hidePostContentEH(index)}
+                          >
+                            Hide post
+                          </Button>
+                        ) : (
+                          <Button
+                            color="danger"
+                            onClick={() => readTriggeringPostEH(index)}
+                          >
+                            Proceed reading
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {(showPostContentStates[index] || Type === "Normal") && (
+                    <div className="mb-3">
+                      <textarea
+                        className="form-control"
+                        value={Content}
+                        onChange={handlePostEditChange}
+                        readOnly={!isEditing}
+                        rows={1}
+                      ></textarea>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+          )}
+        </div>
+      )}
       <div
         className="container-xxl bg-light bg-gradient border rounded-4 shadow mb-3"
         style={{
@@ -417,16 +593,15 @@ const DisplayedPost = ({
               </div>
             )}
             {showPostContent && (
-              <div className="form-floating mb-3">
+              <div className="mb-3">
                 <textarea
                   className="form-control"
-                  placeholder="What's on your mind?"
                   value={isEditing ? editedPostContent : postContent}
                   ref={postRef}
                   onChange={handlePostEditChange}
                   readOnly={!isEditing}
+                  rows={1}
                 ></textarea>
-                <label htmlFor="post">What's on your mind?</label>
               </div>
             )}
             {showDisplayedRemark && (
@@ -492,6 +667,11 @@ const DisplayedPost = ({
                 Hide Replies
               </Button>
             ))}
+          {post_edit_id && (
+            <Button color="primary" onClick={handleEditHistory}>
+              Edit History
+            </Button>
+          )}
           {/* If displayed post belongs to logged in user */}
           {parseInt(logged_in_user_id, 10) === parseInt(user_id, 10) && (
             <>
