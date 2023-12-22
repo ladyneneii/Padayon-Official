@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Logo from "../assets/img/Logo.png";
 import Nene from "../assets/img/nene.jpg";
+import Neil from "../assets/img/neil.jpg";
 
 const AboutPage = () => {
   return (
@@ -35,12 +36,12 @@ const AboutPage = () => {
           </div>
           <div className="flop2">
             <img
-              src={Nene}
-              alt="Nene"
+              src={Neil}
+              alt= "Neil"
               className="border rounded-circle  about__contact-us-img mb-4"
             />
             <h4>Neil Christian Sagun</h4>
-            <h6>Frontend</h6>
+            <h6>Frontend & Documentation</h6>
           </div>
         </div>
       </div>
