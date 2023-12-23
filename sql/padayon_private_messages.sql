@@ -38,7 +38,7 @@ CREATE TABLE `private_messages` (
   CONSTRAINT `private_messages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
   CONSTRAINT `private_messages_ibfk_2` FOREIGN KEY (`private_room_id`) REFERENCES `private_rooms` (`private_room_id`),
   CONSTRAINT `private_messages_ibfk_3` FOREIGN KEY (`private_message_reply_id`) REFERENCES `private_messages` (`private_message_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

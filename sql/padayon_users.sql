@@ -39,7 +39,7 @@ CREATE TABLE `users` (
   `Pronouns` varchar(50) DEFAULT NULL,
   `firebase_avatar_url` varchar(255) DEFAULT 'n/a',
   PRIMARY KEY (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
