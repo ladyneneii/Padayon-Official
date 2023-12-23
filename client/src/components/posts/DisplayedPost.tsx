@@ -51,10 +51,14 @@ const DisplayedPost = ({
   const user_details_str = localStorage.getItem("user_details");
   let logged_in_user_id = "-1";
   let logged_in_username = "";
+  let logged_in_role = "";
+  let logged_in_state = "";
 
   if (user_details_str) {
     logged_in_user_id = JSON.parse(user_details_str).user_id;
     logged_in_username = JSON.parse(user_details_str).Username;
+    logged_in_role = JSON.parse(user_details_str).Role;
+    logged_in_state = JSON.parse(user_details_str).State;
   } else {
     console.error("user details not found in the local storage.");
   }
@@ -97,6 +101,7 @@ const DisplayedPost = ({
   const [editHistory, setEditHistory] = useState<PostProps[]>([]);
   const remarkRef = useRef<HTMLInputElement | null>(null);
   const privacyRef = useRef<HTMLSelectElement | null>(null);
+  const editHistoryContainerRef = useRef<HTMLDivElement | null>(null);
 
   const displayedPrivacyRef = useRef<HTMLSelectElement | null>(null);
   const [validDisplayedRemark, setValidDisplayedRemark] = useState(false);
@@ -134,9 +139,27 @@ const DisplayedPost = ({
     setShowPostContentStates(updatedStates);
   };
 
-  const handleEditHistoryCancel = () => {
-    setShowEditHistory(false)
-  }
+  const handleEditHistoryClose = () => {
+    setShowEditHistory(false);
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (
+        editHistoryContainerRef.current &&
+        !editHistoryContainerRef.current.contains(event.target as Node)
+      ) {
+        // Clicked outside the parent div, run handleEditHistoryCancel
+        handleEditHistoryClose();
+      }
+    };
+
+    document.body.addEventListener("click", handleOutsideClick);
+
+    return () => {
+      document.body.removeEventListener("click", handleOutsideClick);
+    };
+  }, [editHistoryContainerRef]);
 
   const handleRemarkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newRemarkContent = e.target.value;
@@ -293,6 +316,60 @@ const DisplayedPost = ({
     }
   };
 
+  const handleUnhideFromNMHP = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/unmark_hide_post/${post_id}`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        console.log("Successfully marked post as MarkedHidden.");
+        getAllPosts().then((posts_json) => setAllPosts(posts_json));
+      } else {
+        console.error("Failed to mark post as MarkedHidden");
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during DELETE request:", error);
+
+      return;
+    }
+  };
+
+  const handleHideFromNMHP = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/mark_hide_post/${post_id}`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        console.log("Successfully marked post as MarkedHidden.");
+        getAllPosts().then((posts_json) => setAllPosts(posts_json));
+      } else {
+        console.error("Failed to mark post as MarkedHidden");
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during DELETE request:", error);
+
+      return;
+    }
+  };
+
   const handleDeletePost = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
@@ -306,10 +383,13 @@ const DisplayedPost = ({
     ) {
       // remove post from the database
       try {
-        const response = await fetch("http://localhost:3001/api/posts", {
-          method: "DELETE",
-          body: formData,
-        });
+        const response = await fetch(
+          `http://localhost:3001/api/posts/${State}`,
+          {
+            method: "DELETE",
+            body: formData,
+          }
+        );
 
         if (response.ok) {
           console.log("Successfully removed post from the database.");
@@ -334,7 +414,76 @@ const DisplayedPost = ({
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/undo_delete_post/${post_id}`,
+        `http://localhost:3001/api/undo_delete_post/${post_id}/${State}`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        console.log("Successfully undid delete.");
+        getAllPosts().then((posts_json) => setAllPosts(posts_json));
+      } else {
+        console.error("Failed to undo delete.");
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during PATCH request:", error);
+
+      return;
+    }
+  };
+
+  const handleDeletePostAdmin = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("post_id", post_id);
+
+    if (
+      window.confirm(
+        "Confirm deletion? If this post does not have replies, the action cannot be undone."
+      )
+    ) {
+      // remove post from the database
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/delete_post_admin/${State}`,
+          {
+            method: "DELETE",
+            body: formData,
+          }
+        );
+
+        if (response.ok) {
+          console.log("Successfully removed post from the database.");
+
+          // reload all the posts excluding the deleted one
+          getAllPosts().then((posts_json) => setAllPosts(posts_json));
+        } else {
+          console.error("Failed to delete post from the database");
+
+          return;
+        }
+      } catch (error) {
+        console.error("Error during DELETE request:", error);
+
+        return;
+      }
+    }
+  };
+
+  const handleUndoDeletePostAdmin = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/undo_delete_post_admin/${post_id}/${State}`,
         {
           method: "PATCH",
         }
@@ -426,11 +575,14 @@ const DisplayedPost = ({
   return (
     <>
       {showEditHistory && (
-        <div className="editHistoryContainer position-fixed z-2 top-50 start-50 translate-middle p-3 shadow">
+        <div
+          className="editHistoryContainer position-fixed z-2 top-50 start-50 translate-middle p-3 shadow"
+          ref={editHistoryContainerRef}
+        >
           <button
             type="button"
             className="btn-close close-edit-history"
-            onClick={handleEditHistoryCancel}
+            onClick={handleEditHistoryClose}
           ></button>
           {editHistory.map(
             (
@@ -544,8 +696,23 @@ const DisplayedPost = ({
           marginLeft: post_reply_level > 0 ? "50px" : "0px",
         }}
       >
-        {State === "Visible" ? (
+        {State === "Visible" ||
+        (State === "MarkedHidden" &&
+          logged_in_role === "mhp" &&
+          logged_in_state === "Active") ||
+        (State === "MarkedHidden" && logged_in_user_id == user_id) ||
+        (logged_in_role === "admin" &&
+          State !== "MarkedDeleted" &&
+          State !== "MarkedDeletedHidden" &&
+          State !== "MarkedDeletedAdmin" &&
+          State !== "MarkedDeletedHiddenAdmin") ? (
           <>
+            {State === "MarkedHidden" && (
+              <p className="my-3 text-center text-danger fw-bold">
+                This post has been hidden from non-mental health professionals
+                (NMHP).
+              </p>
+            )}
             <div className="user_details my-2">
               <Link to={`/ProfilePage/${Username}`}>
                 <img
@@ -636,10 +803,25 @@ const DisplayedPost = ({
               </div>
             )}
           </>
-        ) : State === "MarkedDeleted" ? (
-          <p className="my-3 text-center fw-semibold">Deleted</p>
-        ) : State === "MarkedHidden" ? (
-          <p className="my-3 text-center fw-semibold">Hidden</p>
+        ) : State === "MarkedDeleted" || State === "MarkedDeletedHidden" ? (
+          <p className="my-3 text-center fw-semibold">
+            This post has been deleted.
+          </p>
+        ) : State === "MarkedDeletedAdmin" ||
+          State === "MarkedDeletedHiddenAdmin" ? (
+          <p className="my-3 text-center fw-semibold">
+            {`${
+              logged_in_user_id === user_id ? "Your" : "This"
+            } post has been deleted by an admin.`}
+          </p>
+        ) : (State === "MarkedHidden" && logged_in_role === "nmhp") ||
+          (State === "MarkedHidden" &&
+            logged_in_role === "mhp" &&
+            logged_in_state === "Unverified") ? (
+          <p className="my-3 text-center text-danger fw-bold">
+            This post has been hidden from non-mental health professionals
+            (NMHP).
+          </p>
         ) : null}
         <div className="post_settings">
           <Button
@@ -668,63 +850,111 @@ const DisplayedPost = ({
               </Button>
             ))}
           {post_edit_id && (
-            <Button color="primary" onClick={handleEditHistory}>
+            <Button
+              color="primary"
+              onClick={handleEditHistory}
+              disabled={
+                (State === "MarkedHidden" && user_id !== logged_in_user_id) ||
+                State === "MarkedDeleted" ||
+                State === "MarkedDeletedHidden" ||
+                State === "MarkedDeletedAdmin" ||
+                State === "MarkedDeletedHiddenAdmin"
+              }
+            >
               Edit History
             </Button>
           )}
+          {(logged_in_role === "mhp" || logged_in_role === "admin") &&
+            logged_in_state === "Active" &&
+            State === "Visible" && (
+              <Button color="primary" onClick={handleHideFromNMHP}>
+                Hide from NMHP
+              </Button>
+            )}
+          {(logged_in_role === "mhp" || logged_in_role === "admin") &&
+            logged_in_state === "Active" &&
+            State === "MarkedHidden" && (
+              <Button color="primary" onClick={handleUnhideFromNMHP}>
+                Unhide from NMHP
+              </Button>
+            )}
+          {logged_in_role === "admin" &&
+            logged_in_user_id !== user_id &&
+            (State === "Visible" || State === "MarkedHidden") && (
+              <Button color="danger" onClick={handleDeletePostAdmin}>
+                Delete as admin
+              </Button>
+            )}
+          {logged_in_role === "admin" &&
+            logged_in_user_id !== user_id &&
+            (State === "MarkedDeletedAdmin" ||
+              State === "MarkedDeletedHiddenAdmin") && (
+              <Button color="danger" onClick={handleUndoDeletePostAdmin}>
+                Undo delete as admin
+              </Button>
+            )}
           {/* If displayed post belongs to logged in user */}
-          {parseInt(logged_in_user_id, 10) === parseInt(user_id, 10) && (
-            <>
-              {State === "MarkedDeleted" ? (
-                <Button color="primary" onClick={handleUndoDelete}>
-                  Undo Delete
-                </Button>
-              ) : !isEditing ? (
-                <>
-                  <Button color="primary" onClick={handleEditPostPending}>
-                    Edit
+          {parseInt(logged_in_user_id, 10) === parseInt(user_id, 10) &&
+            !(
+              State === "MarkedDeletedAdmin" ||
+              State === "MarkedDeletedHiddenAdmin"
+            ) && (
+              <>
+                {State === "MarkedDeleted" ||
+                State === "MarkedDeletedHidden" ? (
+                  <Button color="primary" onClick={handleUndoDelete}>
+                    Undo Delete
                   </Button>
-                  <Button color="danger" onClick={handleDeletePost}>
-                    Delete
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    color="primary"
-                    onClick={handleEditPostConfirm}
-                    disabled={
-                      displayedRemarkRef.current
-                        ? !validEditedPostContent || !validDisplayedRemark
-                        : !validEditedPostContent
-                    }
-                  >
-                    Confirm Edit
-                  </Button>
-                  {!showDisplayedRemark ? (
+                ) : !isEditing ? (
+                  <>
                     <Button
                       color="primary"
-                      onClick={handleDisplayedTriggering}
-                      disabled={false}
+                      onClick={handleEditPostPending}
+                      disabled={State === "MarkedHidden"}
                     >
-                      Mark this as triggering
+                      Edit
                     </Button>
-                  ) : (
+                    <Button color="danger" onClick={handleDeletePost}>
+                      Delete
+                    </Button>
+                  </>
+                ) : (
+                  <>
                     <Button
                       color="primary"
-                      onClick={handleDisplayedTriggeringCancel}
-                      disabled={false}
+                      onClick={handleEditPostConfirm}
+                      disabled={
+                        displayedRemarkRef.current
+                          ? !validEditedPostContent || !validDisplayedRemark
+                          : !validEditedPostContent
+                      }
                     >
-                      Unmark as triggering
+                      Confirm Edit
                     </Button>
-                  )}
-                  <Button color="danger" onClick={handleEditPostCancel}>
-                    Cancel
-                  </Button>
-                </>
-              )}
-            </>
-          )}
+                    {!showDisplayedRemark ? (
+                      <Button
+                        color="primary"
+                        onClick={handleDisplayedTriggering}
+                        disabled={false}
+                      >
+                        Mark this as triggering
+                      </Button>
+                    ) : (
+                      <Button
+                        color="primary"
+                        onClick={handleDisplayedTriggeringCancel}
+                        disabled={false}
+                      >
+                        Unmark as triggering
+                      </Button>
+                    )}
+                    <Button color="danger" onClick={handleEditPostCancel}>
+                      Cancel
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
         </div>
         {showReplies &&
           currentPostReplies.map(

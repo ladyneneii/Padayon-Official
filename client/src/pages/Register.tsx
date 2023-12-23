@@ -621,7 +621,7 @@ const Register = () => {
                 onChange={handleUserTypeChange}
               />
               <label className="form-check-label" htmlFor="nmhp_label">
-                I am not a mental health professional.
+                I am not a mental health professional (NMHP).
               </label>
             </div>
             <div className="form-check">
@@ -635,7 +635,7 @@ const Register = () => {
                 onChange={handleUserTypeChange}
               />
               <label className="form-check-label" htmlFor="mhp_label">
-                I am a mental health professional.
+                I am a mental health professional (MHP).
               </label>
             </div>
           </div>

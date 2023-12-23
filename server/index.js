@@ -1107,8 +1107,61 @@ function getEditHistory(res, connection, post_id) {
   });
 }
 
+// Mark a post from MarkedHidden to Visible
+app.patch(
+  "/api/unmark_hide_post/:post_id",
+  upload.single("avatar_url"),
+  (req, res) => {
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+
+      const State = "Visible";
+      connection.query(
+        "UPDATE posts SET State = ? WHERE post_id = ?",
+        [State, req.params.post_id],
+        (err, rows) => {
+          connection.release();
+
+          if (!err) {
+            console.log("SUCCESSS");
+            res.send("Visible");
+          } else {
+            console.log(err);
+          }
+        }
+      );
+    });
+  }
+);
+// Mark a post as MarkedHidden
+app.patch(
+  "/api/mark_hide_post/:post_id",
+  upload.single("avatar_url"),
+  (req, res) => {
+    pool.getConnection((err, connection) => {
+      if (err) throw err;
+
+      const State = "MarkedHidden";
+      connection.query(
+        "UPDATE posts SET State = ? WHERE post_id = ?",
+        [State, req.params.post_id],
+        (err, rows) => {
+          connection.release();
+
+          if (!err) {
+            console.log("SUCCESSS");
+            res.send("MarkedHidden");
+          } else {
+            console.log(err);
+          }
+        }
+      );
+    });
+  }
+);
+
 // Delete a post
-app.delete("/api/posts", upload.single("avatar_url"), (req, res) => {
+app.delete("/api/posts/:State", upload.single("avatar_url"), (req, res) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
     const params = req.body;
@@ -1125,7 +1178,10 @@ app.delete("/api/posts", upload.single("avatar_url"), (req, res) => {
           res.json(rows);
         } else {
           // update post's state to MarkedDeleted
-          const State = "MarkedDeleted";
+          const State =
+            req.params.State === "MarkedHidden"
+              ? "MarkedDeletedHidden"
+              : "MarkedDeleted";
           connection.query(
             "UPDATE posts SET State = ? WHERE post_id = ?",
             [State, params.post_id],
@@ -1149,12 +1205,84 @@ app.delete("/api/posts", upload.single("avatar_url"), (req, res) => {
 });
 
 // undo delete
-app.patch("/api/undo_delete_post/:post_id", (req, res) => {
+app.patch("/api/undo_delete_post/:post_id/:State", (req, res) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
+
+    const State =
+      req.params.State === "MarkedDeletedHidden" ? "MarkedHidden" : "Visible";
+
     connection.query(
       "UPDATE posts SET State = ? WHERE post_id = ?",
-      ["Visible", req.params.post_id],
+      [State, req.params.post_id],
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+
+        if (!err) {
+          res.send("Success.");
+        } else {
+          console.log(err);
+        }
+      }
+    );
+  });
+});
+
+// Delete a post
+app.delete("/api/delete_post_admin/:State", upload.single("avatar_url"), (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+    const params = req.body;
+
+    connection.query(
+      "DELETE FROM posts WHERE post_id = ?",
+      [params.post_id],
+      (err, rows) => {
+        connection.release(); // return the connection to pool
+
+        if (!err) {
+          console.log("This is");
+          console.log(params.post_id);
+          res.json(rows);
+        } else {
+          // update post's state to MarkedDeletedAdmin
+          const State =
+            req.params.State === "MarkedHidden"
+              ? "MarkedDeletedHiddenAdmin"
+              : "MarkedDeletedAdmin";
+          connection.query(
+            "UPDATE posts SET State = ? WHERE post_id = ?",
+            [State, params.post_id],
+            (err, rows) => {
+              connection.release();
+
+              if (!err) {
+                console.log(rows);
+                console.log(params.post_id);
+                console.log(State);
+                res.send("MarkedDeleted");
+              } else {
+                console.log(err);
+              }
+            }
+          );
+        }
+      }
+    );
+  });
+});
+
+// undo delete
+app.patch("/api/undo_delete_post_admin/:post_id/:State", (req, res) => {
+  pool.getConnection((err, connection) => {
+    if (err) throw err;
+
+    const State =
+      req.params.State === "MarkedDeletedHiddenAdmin" ? "MarkedHidden" : "Visible";
+
+    connection.query(
+      "UPDATE posts SET State = ? WHERE post_id = ?",
+      [State, req.params.post_id],
       (err, rows) => {
         connection.release(); // return the connection to pool
 
