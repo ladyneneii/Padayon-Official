@@ -57,7 +57,7 @@ const AboutPage = () => {
               <a href="#" target="_blank">
                 <i className="fa fa-linkedin fa-white"></i>
               </a>
-              <a href="#" target="_blank">
+              <a href="https://github.com/neil12234" target="_blank">
                 <i className="fa fa-github fa-white"></i>
               </a>
             </div>
