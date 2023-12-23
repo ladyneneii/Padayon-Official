@@ -358,7 +358,7 @@ const ProfilePage = () => {
                       </Button>
                     )}
                     {loggedInRole === "admin" &&
-                      Role !== "admin" &&
+                      Role !== "admin" && Role === "mhp" &&
                       (State !== "Unverified" ? (
                         <Button
                           color="danger"
