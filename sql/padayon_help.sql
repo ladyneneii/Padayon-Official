@@ -35,7 +35,7 @@ CREATE TABLE `help` (
   PRIMARY KEY (`help_id`),
   KEY `nmhp_id` (`nmhp_id`),
   CONSTRAINT `help_ibfk_1` FOREIGN KEY (`nmhp_id`) REFERENCES `non_mental_health_professionals` (`nmhp_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -56,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-21 21:49:01
+-- Dump completed on 2023-12-23 18:03:49

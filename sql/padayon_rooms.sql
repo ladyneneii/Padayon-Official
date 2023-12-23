@@ -29,7 +29,7 @@ CREATE TABLE `rooms` (
   `Title` varchar(255) DEFAULT NULL,
   `Password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `rooms` (
 
 LOCK TABLES `rooms` WRITE;
 /*!40000 ALTER TABLE `rooms` DISABLE KEYS */;
-INSERT INTO `rooms` VALUES (1,'Active','hchafer, mbeer, dlovato','slay','pass'),(18,'Active','arianagrande, nminaj, eslay, vganda, hchafer, mbeer, dlovato, tsivan, cgray, jcoolidge, mother2, mkrabs, beyonce','celebs','pass'),(19,'Active','mbeer','flop','pass'),(20,'Active','mbeer','budding','pass'),(21,'Active','mbeer','celeb','pass'),(22,'Active','hchafer','another room for the gays','pass'),(23,'Active','mother2, hchafer','swifties','pass');
+INSERT INTO `rooms` VALUES (1,'Active','hchafer, mbeer, dlovato','slay','pass'),(18,'Active','arianagrande, nminaj, eslay, vganda, hchafer, mbeer, dlovato, tsivan, cgray, jcoolidge, mother2, mkrabs, beyonce, gwapako','celebs','pass'),(19,'Active','mbeer','flop','pass'),(20,'Active','mbeer','budding','pass'),(21,'Active','mbeer','celeb','pass'),(22,'Active','hchafer','another room for the gays','pass'),(23,'Active','mother2, hchafer','swifties','pass');
 /*!40000 ALTER TABLE `rooms` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-12-21 21:49:01
+-- Dump completed on 2023-12-23 18:03:49
