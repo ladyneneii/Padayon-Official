@@ -7,3 +7,8 @@
   cursor: pointer;
   opacity: 0.8;
 }
+
+.all-users {
+  height: 500px;
+  overflow: auto;
+}

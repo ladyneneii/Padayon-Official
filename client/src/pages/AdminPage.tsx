@@ -12,9 +12,17 @@ interface PendingMHPProps {
   firebase_avatar_url: string;
 }
 
+interface UsersSummarizedInfo {
+  Username: string;
+  Role: string;
+  State: string;
+  firebase_avatar_url: string;
+}
+
 const AdminPage = () => {
   const [role, setRole] = useState("");
   const [pendingMhps, setPendingMhps] = useState<PendingMHPProps[]>([]);
+  const [allUsers, setAllUsers] = useState<UsersSummarizedInfo[]>([]);
 
   useEffect(() => {
     const unparsed_user_details = localStorage.getItem("user_details");
@@ -28,8 +36,6 @@ const AdminPage = () => {
       console.log("User details not found.");
       setRole("");
     }
-
-    // if (role !== "Admin") return;
 
     const fetchPendingMhps = async () => {
       // console.log("This is logged in user Id: " + logged_in_user_id);
@@ -51,7 +57,28 @@ const AdminPage = () => {
       }
     };
 
+    const fetchAllUsers = async () => {
+      // console.log("This is logged in user Id: " + logged_in_user_id);
+      try {
+        const response = await fetch("http://localhost:3001/api/users");
+
+        if (response.ok) {
+          const allUsers_json = await response.json();
+
+          console.log(allUsers_json);
+          setAllUsers(allUsers_json);
+        } else {
+          const error = await response.text();
+
+          console.log(error);
+        }
+      } catch (error) {
+        console.error("Error during GET request:", error);
+      }
+    };
+
     fetchPendingMhps();
+    fetchAllUsers();
   }, []);
 
   return (
@@ -63,13 +90,17 @@ const AdminPage = () => {
         <>
           <div className="container mt-3">
             <div className="remove-row row">
-              <div className="col">
+              <div className="col mb-5">
                 <h3 className="text-center mb-3">
                   Pending Mental Health Professionals
                 </h3>
                 {pendingMhps.map(
                   ({ Username, license_number, firebase_avatar_url }) => (
-                    <Link key={license_number} to={`/ProfilePage/${Username}`} className="pending-mhp">
+                    <Link
+                      key={license_number}
+                      to={`/ProfilePage/${Username}`}
+                      className="pending-mhp"
+                    >
                       <div className="d-flex align-items-center p-2 shadow pending-mhp-hover">
                         <div className="col text-center">
                           <img
@@ -86,15 +117,57 @@ const AdminPage = () => {
                           {Username}
                         </div>
                         <div className="col text-center">{license_number}</div>
-                        <div className="col text-center fw-bold text-danger">
-                          Pending
+                        <div className="col text-center fw-bold text-secondary">
+                          Unverified
                         </div>
                       </div>
                     </Link>
                   )
                 )}
               </div>
-              <div className="col"></div>
+              <div className="col mb-5">
+                <h3 className="text-center mb-3">All Users</h3>
+                <div className="all-users">
+                  {allUsers.map(
+                    ({ Username, Role, State, firebase_avatar_url }) => (
+                      <Link
+                        key={Username}
+                        to={`/ProfilePage/${Username}`}
+                        className="pending-mhp"
+                      >
+                        <div className="d-flex align-items-center p-2 shadow pending-mhp-hover">
+                          <div className="col text-center">
+                            <img
+                              src={
+                                firebase_avatar_url === "n/a"
+                                  ? empty_pfp
+                                  : firebase_avatar_url
+                              }
+                              alt="profile picture"
+                              className="rounded-circle empty_profile_picture_icon me-3"
+                            />
+                          </div>
+                          <div className="col text-center p-0 inline-block">
+                            {Username}
+                          </div>
+                          <div className="col text-center">{Role}</div>
+                          <div
+                            className={`col text-center fw-bold ${
+                              State === "Active"
+                                ? "text-success"
+                                : State === "Blocked"
+                                ? "text-danger"
+                                : "text-secondary"
+                            }`}
+                          >
+                            {State}
+                          </div>
+                        </div>
+                      </Link>
+                    )
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </>

@@ -219,13 +219,14 @@ app.post("/api/users", upload.single("avatar_url"), (req, res) => {
   });
 });
 
+
 // update State from Unverified to Active
-app.patch("/api/users_role/:user_id", (req, res) => {
+app.patch("/api/users_role/:user_id/:State", (req, res) => {
   pool.getConnection((err, connection) => {
     if (err) throw err;
     connection.query(
       "UPDATE users SET State = ? WHERE user_id = ?",
-      ["Active", req.params.user_id],
+      [req.params.State, req.params.user_id],
       (err, rows) => {
         connection.release(); // return the connection to pool
 
@@ -449,7 +450,7 @@ app.get("/api/mhp_nhp_with_user_info/:usernameLatLon", (req, res) => {
                   }
                 }
               );
-            } else if (rows[0].Role === "nmhp") {
+            } else if (rows[0].Role === "nmhp" || rows[0].Role === "admin") {
               connection.query(
                 `SELECT 
                   u.user_id,
@@ -458,6 +459,7 @@ app.get("/api/mhp_nhp_with_user_info/:usernameLatLon", (req, res) => {
                   u.first_name,
                   u.middle_name,
                   u.last_name,
+                  u.State,
                   u.Age,
                   u.Gender,
                   u.Pronouns,

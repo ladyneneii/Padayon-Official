@@ -52,6 +52,7 @@ const ProfilePage = () => {
   const [errMsg, setErrMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [dummyState, setDummyState] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -106,7 +107,7 @@ const ProfilePage = () => {
     } else {
       console.error("Geolocation is not supported by your browser");
     }
-  }, []);
+  }, [dummyState]);
 
   const handleMessage = async (
     e: React.MouseEvent<HTMLButtonElement>,
@@ -150,13 +151,40 @@ const ProfilePage = () => {
     }
   };
 
-  const handleVerifyMHP = async (
+  const handleBlockUser = async (
     e: React.MouseEvent<HTMLButtonElement>,
     user_id: string
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/users_role/${user_id}`,
+        `http://localhost:3001/api/users_role/${user_id}/Blocked`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        console.log("Succesfully blocked user.");
+        setDummyState((prev) => !prev);
+      } else {
+        console.log(response);
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during PATCH request:", error);
+
+      return;
+    }
+  };
+
+  const handleUnverifyMHP = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    user_id: string
+  ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/users_role/${user_id}/Unverified`,
         {
           method: "PATCH",
         }
@@ -164,7 +192,34 @@ const ProfilePage = () => {
 
       if (response.ok) {
         console.log("Succesfully verified mhp.");
-        setSuccessMsg("Successfully verified this mental health professional.");
+        setDummyState((prev) => !prev);
+      } else {
+        console.log(response);
+
+        return;
+      }
+    } catch (error) {
+      console.error("Error during PATCH request:", error);
+
+      return;
+    }
+  };
+
+  const handleVerifyMHP = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    user_id: string
+  ) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3001/api/users_role/${user_id}/Active`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (response.ok) {
+        console.log("Succesfully verified mhp.");
+        setDummyState((prev) => !prev);
       } else {
         console.log(response);
 
@@ -302,15 +357,43 @@ const ProfilePage = () => {
                         Message
                       </Button>
                     )}
-                    {loggedInRole === "admin" && State === "Unverified" && (
-                      <Button
-                        color="primary"
-                        onClick={(e) => handleVerifyMHP(e, user_id)}
-                        disabled={!isLoggedIn}
-                      >
-                        Verify
-                      </Button>
-                    )}
+                    {loggedInRole === "admin" &&
+                      Role !== "admin" &&
+                      (State !== "Unverified" ? (
+                        <Button
+                          color="danger"
+                          onClick={(e) => handleUnverifyMHP(e, user_id)}
+                        >
+                          Unverify
+                        </Button>
+                      ) : (
+                        <Button
+                          color="primary"
+                          onClick={(e) => handleVerifyMHP(e, user_id)}
+                        >
+                          Verify
+                        </Button>
+                      ))}
+                    {loggedInRole === "admin" &&
+                      Role !== "admin" &&
+                      (State !== "Blocked" ? (
+                        <Button
+                          color="danger"
+                          onClick={(e) => handleBlockUser(e, user_id)}
+                          disabled={!isLoggedIn}
+                        >
+                          Block
+                        </Button>
+                      ) : (
+                        <Button
+                          color="primary"
+                          // use the same function as verifymhp since it just sets user's state to active, which is what unblocking does as well.
+                          onClick={(e) => handleVerifyMHP(e, user_id)}
+                          disabled={!isLoggedIn}
+                        >
+                          Unblock
+                        </Button>
+                      ))}
                   </div>
                 </div>
 
