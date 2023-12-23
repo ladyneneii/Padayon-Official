@@ -26,6 +26,6 @@ cd Padayon-Official/server
 npm run start
 ```
 
-4. Import the sql files at the Padayon-Official/sql directory. In case there are errors importing the sql files, import the sql file at the Padayon-Official/alternative-sql directory. Adjust the MySQL credentials on line 25 of the Padayon-Official/server/index.js file accordingly.
+4. Import padayon.sql at the Padayon-Official/sql directory. In case there are errors in importing the sql file, import the sql files at the Padayon-Official/alternative-sql directory. Adjust the MySQL credentials on line 25 of the Padayon-Official/server/index.js file accordingly.
 
 
