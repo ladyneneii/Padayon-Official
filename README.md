@@ -5,22 +5,27 @@ The second repository https://github.com/ladyneneii/Padayon contains both the se
 
 To run the project:
 
-1. Open a terminal window:
-
+1. Clone the repository:
 ```
-git clone https://github.com/ladyneneii/Padayon-Official 
-cd client 
-npm install vite --save-dev 
+git clone https://github.com/ladyneneii/Padayon-Official
+```
+
+2. Open a terminal window:
+
+``` 
+cd Padayon-Official/client
+npm install vite --save-dev
 npm run dev
 ```
+Click on the provided link.
 
-2. Open another terminal window:
+3. Open another terminal window:
 
 ```
-cd server
+cd Padayon-Official/server
 npm run start
 ```
 
-3. Import the sql files in the sql folder.
+4. Import the sql files at the Padayon-Official/sql directory. In case there are errors importing the sql files, import the sql file at the Padayon-Official/alternative-sql directory. Adjust the MySQL credentials on line 25 of the Padayon-Official/server/index.js file accordingly.
 
 
