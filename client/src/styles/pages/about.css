@@ -15,6 +15,20 @@
   object-fit: cover;
 }
 
+.about__socials a {
+  display: inline-block;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  border-radius: 2px;
+  font-size: 20px;
+  color: #222;
+  text-align: center;
+  line-height: 35px;
+  margin-right: 3px;
+  margin-bottom: 5px;
+}
+
 @media (max-width: 767px) {
  .about__contact-us {
     flex-wrap: wrap;

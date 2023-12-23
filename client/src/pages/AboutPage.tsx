@@ -33,15 +33,34 @@ const AboutPage = () => {
             />
             <h4>Ernest Joseph S. Curativo</h4>
             <h6>Backend & Frontend</h6>
+            <div className="about__socials">
+              <a
+                href="https://www.linkedin.com/in/ernest-curativo/"
+                target="_blank"
+              >
+                <i className="fa fa-linkedin fa-white"></i>
+              </a>
+              <a href="https://github.com/ladyneneii" target="_blank">
+                <i className="fa fa-github fa-white"></i>
+              </a>
+            </div>
           </div>
           <div className="flop2">
             <img
               src={Neil}
-              alt= "Neil"
+              alt="Neil"
               className="border rounded-circle  about__contact-us-img mb-4"
             />
             <h4>Neil Christian Sagun</h4>
             <h6>Frontend & Documentation</h6>
+            <div className="about__socials">
+              <a href="#" target="_blank">
+                <i className="fa fa-linkedin fa-white"></i>
+              </a>
+              <a href="#" target="_blank">
+                <i className="fa fa-github fa-white"></i>
+              </a>
+            </div>
           </div>
         </div>
       </div>
