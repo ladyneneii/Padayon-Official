@@ -7,15 +7,19 @@ To run the project:
 
 1. Open a terminal window:
 
-git clone https://github.com/ladyneneii/Padayon-Official
-cd client
-npm install vite --save-dev
+```
+git clone https://github.com/ladyneneii/Padayon-Official 
+cd client 
+npm install vite --save-dev 
 npm run dev
+```
 
 2. Open another terminal window:
 
+```
 cd server
 npm run start
+```
 
 3. Import the sql files in the sql folder.
 
