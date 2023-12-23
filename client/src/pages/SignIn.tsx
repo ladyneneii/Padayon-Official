@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Alert from "../components/Alert";
+import WrongPage from "../components/WrongPage";
 
 const EMAIL_REGEX = /^\S+@\S+\.\S+$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%_=+]).{8,24}$/;
@@ -93,7 +94,7 @@ const SignIn = () => {
               "Your account is currently pending. Please wait for the admins to approve your account."
             );
           } else if (State === "Blocked") {
-            setErrMsg("Your account is blocked.");
+            setErrMsg("Your account is blocked. Please contact one of the admins to resolve this issue.");
           } else if (State === "Unverified") {
             localStorage.setItem(
               "user_details",

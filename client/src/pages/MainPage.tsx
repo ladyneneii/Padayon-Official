@@ -69,6 +69,7 @@ const MainPage = () => {
         // only add location to database if user is an mhp
         if (JSON.parse(unparsed_user_details)?.Role === "mhp") {
           const user_id = JSON.parse(unparsed_user_details)?.user_id;
+          const logged_in_role = JSON.parse(unparsed_user_details)?.Role;
           // Get mhp_id and location from mhp user
           try {
             const response = await fetch(
