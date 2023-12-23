@@ -1,7 +1,7 @@
-This is the third and final repository of our App Dev project "Padayon;" <br>
+This is the third and final repository of our App Dev project "Padayon;" 
 
-The first repository https://github.com/ladyneneii/CS3105-02-Interactive-Website contains only the client side of the app. <br>
-The second repository https://github.com/ladyneneii/Padayon contains both the server and client sides of the app, but because of submodule problems, a third repository had to be created. <br>>
+The first repository https://github.com/ladyneneii/CS3105-02-Interactive-Website contains only the client side of the app. 
+The second repository https://github.com/ladyneneii/Padayon contains both the server and client sides of the app, but because of submodule problems, a third repository had to be created. 
 
 To run the project:
 
